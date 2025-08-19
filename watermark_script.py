@@ -225,42 +225,39 @@ class WatermarkProcessor:
     
     def _calculate_number_position(self, image: Image.Image, img_width: int, img_height: int) -> Tuple[int, int]:
         """Calculate number watermark position based on configuration."""
-        # Account for shadow blur to prevent cutting (no offset, but blur extends)
-        shadow_buffer = max(self.shadow_blur + 3, 0)
-        
+        # The watermark canvas now properly accounts for shadows, so we just need basic positioning
         # Approximate number watermark dimensions
         number_width = 100
         number_height = 30
         
         if self.number_position == 'top-left':
-            return (self.margin + shadow_buffer, self.margin + shadow_buffer)
+            return (self.margin, self.margin)
         elif self.number_position == 'top-right':
-            return (img_width - number_width - self.margin - shadow_buffer, self.margin + shadow_buffer)
+            return (img_width - number_width - self.margin, self.margin)
         elif self.number_position == 'bottom-left':
-            return (self.margin + shadow_buffer, img_height - number_height - self.margin - shadow_buffer)
+            return (self.margin, img_height - number_height - self.margin)
         elif self.number_position == 'center':
             return ((img_width - number_width) // 2, (img_height - number_height) // 2)
         else:  # bottom-right (default)
-            return (img_width - number_width - self.margin - shadow_buffer, img_height - number_height - self.margin - shadow_buffer)
+            return (img_width - number_width - self.margin, img_height - number_height - self.margin)
     
     def _calculate_custom_text_position(self, image: Image.Image, img_width: int, img_height: int, text_width: int, text_height: int) -> Tuple[int, int]:
         """Calculate custom text watermark position based on configuration."""
-        # Account for shadow offset AND blur to prevent cutting
-        # Shadow extends by offset + blur radius + extra safety buffer
-        shadow_buffer = max(self.custom_text_shadow_offset + self.custom_text_shadow_blur + 5, 0)
+        # The watermark canvas now properly accounts for shadows, so we just need basic positioning
+        # The canvas dimensions already include shadow space, so no additional buffer needed
         
         if self.custom_text_position == 'top-left':
-            return (self.margin + shadow_buffer, self.margin + shadow_buffer)
+            return (self.margin, self.margin)
         elif self.custom_text_position == 'top-right':
-            return (img_width - text_width - self.margin - shadow_buffer, self.margin + shadow_buffer)
+            return (img_width - text_width - self.margin, self.margin)
         elif self.custom_text_position == 'bottom-left':
-            return (self.margin + shadow_buffer, img_height - text_height - self.margin - shadow_buffer)
+            return (self.margin, img_height - text_height - self.margin)
         elif self.custom_text_position == 'center':
             return ((img_width - text_width) // 2, (img_height - text_height) // 2)
         elif self.custom_text_position == 'center-bottom':
-            return ((img_width - text_width) // 2, img_height - text_height - self.margin - shadow_buffer)
+            return ((img_width - text_width) // 2, img_height - text_height - self.margin)
         else:  # center-bottom (default)
-            return ((img_width - text_width) // 2, img_height - text_height - self.margin - shadow_buffer)
+            return ((img_width - text_width) // 2, img_height - text_height - self.margin)
     
     def _resize_png_watermark(self, image: Image.Image) -> Image.Image:
         """Resize PNG watermark proportionally based on image size."""
@@ -305,9 +302,11 @@ class WatermarkProcessor:
         text_width = bbox[2] - bbox[0]
         text_height = bbox[3] - bbox[1]
         
-        # Create canvas with proper dimensions
-        canvas_width = text_width + self.shadow_offset * 2 + 20
-        canvas_height = text_height + self.shadow_offset * 2 + 20
+        # Create canvas with proper dimensions - account for shadow offset AND blur
+        # Blur effect extends the shadow beyond the offset
+        blur_extension = max(self.shadow_blur * 2, 0)
+        canvas_width = text_width + self.shadow_offset + blur_extension + 40
+        canvas_height = text_height + self.shadow_offset + blur_extension + 40
         text_img = Image.new('RGBA', (canvas_width, canvas_height), (0, 0, 0, 0))
         draw = ImageDraw.Draw(text_img)
         
@@ -315,9 +314,13 @@ class WatermarkProcessor:
         number_rgba = self._hex_to_rgba(self.number_color, self.number_opacity)
         shadow_rgba = self._hex_to_rgba(self.shadow_color, self.number_opacity)
         
+        # Calculate center position for text within canvas
+        text_x = (canvas_width - text_width) // 2
+        text_y = (canvas_height - text_height) // 2
+        
         # Draw drop shadow
-        shadow_x = self.shadow_offset
-        shadow_y = self.shadow_offset
+        shadow_x = text_x + self.shadow_offset
+        shadow_y = text_y + self.shadow_offset
         draw.text((shadow_x, shadow_y), number, fill=shadow_rgba, font=font)
         
         # Apply blur to shadow if specified
@@ -328,7 +331,7 @@ class WatermarkProcessor:
             draw.text((shadow_x, shadow_y), number, fill=shadow_rgba, font=font)
         
         # Draw main text
-        draw.text((0, 0), number, fill=number_rgba, font=font)
+        draw.text((text_x, text_y), number, fill=number_rgba, font=font)
         
         return text_img
     
@@ -392,9 +395,11 @@ class WatermarkProcessor:
         text_width = bbox[2] - bbox[0]
         text_height = bbox[3] - bbox[1]
         
-        # Create canvas with proper dimensions
-        canvas_width = text_width + self.custom_text_shadow_offset * 2 + 20
-        canvas_height = text_height + self.custom_text_shadow_offset * 2 + 20
+        # Create canvas with proper dimensions - account for shadow offset AND blur
+        # Blur effect extends the shadow beyond the offset
+        blur_extension = max(self.custom_text_shadow_blur * 2, 0)
+        canvas_width = text_width + self.custom_text_shadow_offset + blur_extension + 40
+        canvas_height = text_height + self.custom_text_shadow_offset + blur_extension + 40
         text_img = Image.new('RGBA', (canvas_width, canvas_height), (0, 0, 0, 0))
         draw = ImageDraw.Draw(text_img)
         
@@ -402,9 +407,13 @@ class WatermarkProcessor:
         text_rgba = self._hex_to_rgba(self.custom_text_color, self.custom_text_opacity)
         shadow_rgba = self._hex_to_rgba(self.custom_text_shadow_color, self.custom_text_opacity)
         
+        # Calculate center position for text within canvas
+        text_x = (canvas_width - text_width) // 2
+        text_y = (canvas_height - text_height) // 2
+        
         # Draw drop shadow
-        shadow_x = self.custom_text_shadow_offset
-        shadow_y = self.custom_text_shadow_offset
+        shadow_x = text_x + self.custom_text_shadow_offset
+        shadow_y = text_y + self.custom_text_shadow_offset
         draw.text((shadow_x, shadow_y), text, fill=shadow_rgba, font=font)
         
         # Apply blur to shadow if specified
@@ -415,7 +424,7 @@ class WatermarkProcessor:
             draw.text((shadow_x, shadow_y), text, fill=shadow_rgba, font=font)
         
         # Draw main text
-        draw.text((0, 0), text, fill=text_rgba, font=font)
+        draw.text((text_x, text_y), text, fill=text_rgba, font=font)
         
         return text_img
     
