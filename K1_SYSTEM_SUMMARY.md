@@ -7,12 +7,13 @@ The K1 Multi-Folder Watermark System is a specialized, production-ready solution
 ## 🚀 **Key Features**
 
 ### **Core Capabilities**
-- **Multi-Folder Processing**: Automatically processes multiple folder variants (e.g., `test_nico`, `test_nico_folder2`, `test_nico_folder3`)
+- **Multi-Folder Processing**: Automatically processes all subfolders within a parent folder (e.g., `k1_test_input`)
 - **Pre-Configured Settings**: 3 professional configurations tested and optimized for K1 printing workflows
 - **Batch Processing**: Process multiple configurations simultaneously
 - **Parallel Processing**: Multi-threaded processing for improved performance
 - **Custom Configuration**: Override any setting or create completely custom configurations
 - **Enhanced Safety**: Advanced shadow cutting prevention with automatic safety margins
+- **Easy Configuration Editing**: Modify `final_v2` settings directly in the script with clear documentation
 
 ### **Professional Configurations**
 
@@ -52,6 +53,31 @@ K1 System/
 └── watermark_script.py         # Core watermark engine
 ```
 
+## 🗂️ **Updated Folder Structure**
+
+### **Input Organization**
+- **Parent Folder**: Single input folder (e.g., `k1_test_input`)
+- **Subfolder Detection**: Automatically finds all subfolders within the parent
+- **Flexible Naming**: Supports any subfolder names and structures
+
+### **Example Structure**
+```
+k1_test_input/                    # Parent input folder
+├── fofof 345/                    # Subfolder 1
+├── nananane46/                   # Subfolder 2
+├── test_nico/                    # Subfolder 3
+└── test_nico - copia/            # Subfolder 4
+```
+
+### **Output Organization**
+```
+k1_output/                        # Output folder
+├── fofof 345_final_v2/           # Subfolder 1 with final_v2 config
+├── nananane46_final_v2/          # Subfolder 2 with final_v2 config
+├── test_nico_final_v2/           # Subfolder 3 with final_v2 config
+└── test_nico - copia_final_v2/   # Subfolder 4 with final_v2 config
+```
+
 ## 🧪 **Testing Results**
 
 ### **Comprehensive Test Suite Results**
@@ -77,6 +103,18 @@ All 10 tests passed successfully:
 
 ## 🎨 **Technical Improvements**
 
+### **Enhanced Folder Processing**
+- **Automatic Subfolder Detection**: Scans parent folder for all subdirectories
+- **Flexible Naming Support**: Handles any subfolder names and structures
+- **Path Resolution**: Automatically constructs full input/output paths
+- **Error Handling**: Robust error handling for missing or inaccessible folders
+
+### **Configuration Management**
+- **Easy Editing**: `final_v2` configuration is clearly documented and editable
+- **Parameter Documentation**: Each setting includes explanations and valid ranges
+- **Inline Comments**: Clear guidance for customization without external tools
+- **Version Control Friendly**: Simple text-based configuration for easy tracking
+
 ### **Shadow Cutting Prevention**
 - **Root Cause Identified**: Canvas sizing and positioning calculations
 - **Solution Implemented**: Advanced safety margin system
@@ -92,9 +130,16 @@ All 10 tests passed successfully:
 
 ## 📊 **Usage Examples**
 
+### **Configuration Editing**
+The `final_v2` configuration is now easily editable directly in the script:
+- **Location**: Lines 60-75 in `k1_multi_folder.py`
+- **Clear Comments**: Each parameter is documented with explanations
+- **Valid Ranges**: Parameter limits are specified for easy tuning
+- **No Restart Required**: Edit and save, then run the script
+
 ### **Basic Production Workflow**
 ```bash
-# 1. Test with dry run
+# 1. Test with dry run (processes all subfolders in production_photos)
 py k1_multi_folder.py --base-input "production_photos" --base-output "test_output" --config "final_v2" --dry-run
 
 # 2. Process with tested configuration
@@ -226,10 +271,12 @@ py k1_test_all_features.py
 
 ### **Technical Achievements**
 - ✅ **Shadow Cutting**: 100% resolved with enhanced safety system
-- ✅ **Multi-Folder**: Automatic folder variant detection and processing
+- ✅ **Multi-Folder**: Automatic processing of all subfolders within parent folder
 - ✅ **Performance**: 30% improvement with parallel processing
 - ✅ **Quality**: 100% original image quality preservation
 - ✅ **Reliability**: All tests passed successfully
+- ✅ **Configuration Editing**: Easy inline editing with clear documentation
+- ✅ **Folder Structure**: Flexible subfolder detection and processing
 
 ### **User Experience**
 - ✅ **Ease of Use**: Simple command-line interface

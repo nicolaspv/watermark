@@ -4,6 +4,15 @@ K1 Multi-Folder Watermark Processing Script
 
 Processes multiple folders with pre-configured watermark settings optimized for K1 printing workflows.
 Supports batch processing, custom configurations, and parallel processing.
+
+FOLDER STRUCTURE:
+- Input: Parent folder (e.g., "k1_test_input") containing multiple subfolders
+- Output: Creates output folders for each subfolder with configuration suffix
+- Example: k1_test_input/folder1/ -> k1_output/folder1_final_v2/
+
+CONFIGURATION EDITING:
+- Edit the "final_v2" configuration in the _load_configurations() method below
+- All parameters are documented with comments for easy customization
 """
 
 import argparse
@@ -38,18 +47,23 @@ class K1MultiFolderProcessor:
     def _load_configurations(self) -> Dict[str, Dict[str, str]]:
         """Load pre-configured watermark settings."""
         return {
+            # ========================================
+            # 🎨 FINAL_V2 CONFIGURATION - EDIT HERE
+            # ========================================
+            # This is the main configuration for K1 printing workflows
+            # Modify the values below to fine-tune the watermark appearance
             "final_v2": {
-                "custom_text": "hamacak1.com",
-                "google_font": "Rubik",
-                "custom_text_position": "center-bottom",
-                "custom_text_size_ratio": "0.05",
-                "margin": "120",
-                "custom_text_shadow_offset": "15",
-                "custom_text_shadow_blur": "8",
-                "custom_text_opacity": "0.6",
-                "shadow_offset": "0",
-                "shadow_blur": "6",
-                "number_opacity": "0.4"
+                "custom_text": "hamacak1.com",           # Watermark text
+                "google_font": "Rubik",                  # Font family
+                "custom_text_position": "center-bottom", # Position: top-left, top-right, center, center-bottom, bottom-left, bottom-right
+                "custom_text_size_ratio": "0.05",        # Text size (0.01-0.1, higher = larger)
+                "margin": "120",                         # Margin from edges in pixels
+                "custom_text_shadow_offset": "10",       # Shadow offset in pixels
+                "custom_text_shadow_blur": "8",          # Shadow blur radius
+                "custom_text_opacity": "0.5",            # Text transparency (0.1-1.0)
+                "shadow_offset": "0",                    # Number shadow offset
+                "shadow_blur": "8",                      # Number shadow blur
+                "number_opacity": "0.4"                  # Number transparency
             },
             "glow_effect": {
                 "custom_text": "K1-PRINT",
@@ -81,22 +95,29 @@ class K1MultiFolderProcessor:
         }
     
     def get_folder_variants(self, base_folder: str) -> List[str]:
-        """Get all folder variants based on base folder name."""
-        variants = [
-            base_folder,
-            f"{base_folder}_folder2",
-            f"{base_folder}_folder3"
-        ]
+        """Get all subfolders within the parent folder."""
+        if not os.path.exists(base_folder) or not os.path.isdir(base_folder):
+            logger.error(f"Parent folder not found: {base_folder}")
+            return []
         
-        # Filter to only existing folders
-        existing_variants = []
-        for variant in variants:
-            if os.path.exists(variant) and os.path.isdir(variant):
-                existing_variants.append(variant)
-            else:
-                logger.warning(f"Folder not found: {variant}")
-        
-        return existing_variants
+        # Get all subfolders within the parent folder
+        subfolders = []
+        try:
+            for item in os.listdir(base_folder):
+                item_path = os.path.join(base_folder, item)
+                if os.path.isdir(item_path):
+                    subfolders.append(item)
+            
+            if not subfolders:
+                logger.warning(f"No subfolders found in: {base_folder}")
+                return []
+            
+            logger.info(f"Found {len(subfolders)} subfolders in {base_folder}: {subfolders}")
+            return subfolders
+            
+        except Exception as e:
+            logger.error(f"Error scanning folder {base_folder}: {e}")
+            return []
     
     def build_command(self, config_name: str, input_folder: str, output_folder: str, 
                      custom_settings: Optional[Dict[str, str]] = None) -> List[str]:
@@ -215,6 +236,8 @@ class K1MultiFolderProcessor:
         # Create output folders
         output_folders = []
         for input_folder in input_folders:
+            # Use full path for input folder
+            full_input_path = os.path.join(base_input, input_folder)
             output_folder = os.path.join(base_output, f"{input_folder}_{config_name}")
             output_folders.append(output_folder)
         
@@ -228,9 +251,11 @@ class K1MultiFolderProcessor:
                 future_to_folder = {}
                 
                 for input_folder, output_folder in zip(input_folders, output_folders):
+                    # Use full path for input folder
+                    full_input_path = os.path.join(base_input, input_folder)
                     future = executor.submit(
                         self.process_single_folder,
-                        input_folder, output_folder, config_name, custom_settings, dry_run
+                        full_input_path, output_folder, config_name, custom_settings, dry_run
                     )
                     future_to_folder[future] = input_folder
                 
@@ -245,8 +270,10 @@ class K1MultiFolderProcessor:
         else:
             # Sequential processing
             for input_folder, output_folder in zip(input_folders, output_folders):
+                # Use full path for input folder
+                full_input_path = os.path.join(base_input, input_folder)
                 success = self.process_single_folder(
-                    input_folder, output_folder, config_name, custom_settings, dry_run
+                    full_input_path, output_folder, config_name, custom_settings, dry_run
                 )
                 results[input_folder] = success
         
@@ -298,14 +325,14 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  # Process with final_v2 configuration
-  py k1_multi_folder.py --base-input "test_nico" --base-output "k1_output" --config "final_v2"
+  # Process with final_v2 configuration (processes all subfolders in k1_test_input)
+  py k1_multi_folder.py --base-input "k1_test_input" --base-output "k1_output" --config "final_v2"
   
   # Process with custom settings
-  py k1_multi_folder.py --base-input "test_nico" --base-output "k1_output" --config "custom" --custom-text "K1-PRINT"
+  py k1_multi_folder.py --base-input "k1_test_input" --base-output "k1_output" --config "custom" --custom-text "K1-PRINT"
   
   # Batch processing with multiple configs
-  py k1_multi_folder.py --base-input "test_nico" --base-output "k1_output" --config "batch" --batch-configs "final_v2,glow_effect"
+  py k1_multi_folder.py --base-input "k1_test_input" --base-output "k1_output" --config "batch" --batch-configs "final_v2,glow_effect"
   
   # List available configurations
   py k1_multi_folder.py --list-configs
@@ -314,7 +341,7 @@ Examples:
     
     # Required arguments
     parser.add_argument('--base-input', required=False,
-                       help='Base input folder name (e.g., "test_nico")')
+                       help='Parent input folder containing subfolders to process (e.g., "k1_test_input")')
     parser.add_argument('--base-output', required=False,
                        help='Base output folder name (e.g., "k1_output")')
     parser.add_argument('--config', required=False,

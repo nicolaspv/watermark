@@ -4,6 +4,11 @@ A specialized version of the bulk image watermark script optimized for K1 image 
 
 ## 🎯 **K1 Configuration - Latest Test Results**
 
+### **Updated Folder Structure**
+- **Input**: Single parent folder (e.g., `k1_test_input`) containing multiple subfolders
+- **Output**: Creates output folders for each subfolder with configuration suffix
+- **Example**: `k1_test_input/folder1/` → `k1_output/folder1_final_v2/`
+
 ### **Tested Configuration (test_nico_watermarked_final_v2)**
 ```bash
 py watermark_script.py \
@@ -32,22 +37,31 @@ py watermark_script.py \
 
 ## 🚀 **Multi-Folder Processing**
 
-### **Test Folders Available**
-- `test_nico` - Primary test folder
-- `test_nico_folder2` - Secondary test folder  
-- `test_nico_folder3` - Tertiary test folder
+### **New Folder Structure**
+- **Input**: Single parent folder (e.g., `k1_test_input`) containing multiple subfolders
+- **Automatic Detection**: Script automatically finds all subfolders within the parent folder
+- **Output**: Creates output folders for each subfolder with configuration suffix
+
+### **Example Test Structure**
+```
+k1_test_input/
+├── fofof 345/          # Subfolder 1
+├── nananane46/         # Subfolder 2
+├── test_nico/          # Subfolder 3
+└── test_nico - copia/  # Subfolder 4
+```
 
 ### **Multi-Folder Scripts**
 
 #### **1. Basic Multi-Folder Processing**
 ```bash
-py k1_multi_folder.py --base-input "test_nico" --base-output "k1_output" --config "final_v2"
+py k1_multi_folder.py --base-input "k1_test_input" --base-output "k1_output" --config "final_v2"
 ```
 
 #### **2. Advanced Multi-Folder with Custom Settings**
 ```bash
 py k1_multi_folder.py \
-  --base-input "test_nico" \
+  --base-input "k1_test_input" \
   --base-output "k1_output" \
   --config "custom" \
   --custom-text "K1-PRINT" \
@@ -60,13 +74,20 @@ py k1_multi_folder.py \
 #### **3. Batch Processing with Different Configurations**
 ```bash
 py k1_multi_folder.py \
-  --base-input "test_nico" \
+  --base-input "k1_test_input" \
   --base-output "k1_output" \
   --config "batch" \
   --batch-configs "final_v2,custom,glow_effect"
 ```
 
 ## ⚙️ **Pre-Configured Settings**
+
+### **Easy Configuration Editing**
+The `final_v2` configuration is now easily editable directly in the script:
+- **Location**: Lines 60-75 in `k1_multi_folder.py`
+- **Clear Comments**: Each parameter is documented with explanations
+- **Valid Ranges**: Parameter limits are specified for easy tuning
+- **No Restart Required**: Edit and save, then run the script
 
 ### **Configuration Profiles**
 

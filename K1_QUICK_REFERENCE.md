@@ -4,14 +4,14 @@
 
 ### **Basic Usage**
 ```bash
-# Process with tested final_v2 configuration
-py k1_multi_folder.py --base-input "test_nico" --base-output "k1_output" --config "final_v2"
+# Process with tested final_v2 configuration (processes all subfolders in k1_test_input)
+py k1_multi_folder.py --base-input "k1_test_input" --base-output "k1_output" --config "final_v2"
 
 # List all available configurations
 py k1_multi_folder.py --list-configs
 
 # Dry run to preview processing
-py k1_multi_folder.py --base-input "test_nico" --base-output "k1_output" --config "final_v2" --dry-run
+py k1_multi_folder.py --base-input "k1_test_input" --base-output "k1_output" --config "final_v2" --dry-run
 ```
 
 ### **Pre-Configured Settings**
@@ -67,16 +67,16 @@ py k1_multi_folder.py --base-input "test_nico" --base-output "k1_output" --confi
 ### **Custom Configuration**
 ```bash
 # Override specific settings
-py k1_multi_folder.py --base-input "test_nico" --base-output "k1_output" --config "final_v2" --custom-text "K1-CUSTOM" --custom-text-opacity 0.7
+py k1_multi_folder.py --base-input "k1_test_input" --base-output "k1_output" --config "final_v2" --custom-text "K1-CUSTOM" --custom-text-opacity 0.7
 
 # Full custom configuration
-py k1_multi_folder.py --base-input "test_nico" --base-output "k1_output" --config "custom" --custom-text "K1-FULL" --google-font "Rubik" --custom-text-shadow-offset 20 --custom-text-shadow-blur 10 --custom-text-opacity 0.6
+py k1_multi_folder.py --base-input "k1_test_input" --base-output "k1_output" --config "custom" --custom-text "K1-FULL" --google-font "Rubik" --custom-text-shadow-offset 20 --custom-text-shadow-blur 10 --custom-text-opacity 0.6
 ```
 
 ### **Batch Processing**
 ```bash
 # Process with multiple configurations at once
-py k1_multi_folder.py --base-input "test_nico" --base-output "k1_output" --config "batch" --batch-configs "final_v2,glow_effect,dramatic_shadow"
+py k1_multi_folder.py --base-input "k1_test_input" --base-output "k1_output" --config "batch" --batch-configs "final_v2,glow_effect,dramatic_shadow"
 ```
 
 ### **Parallel Processing**
@@ -93,18 +93,29 @@ py k1_multi_folder.py --base-input "test_nico" --base-output "k1_output" --confi
 
 ## 📁 **Output Structure**
 
+### **New Folder Structure**
 ```
-k1_output/
-├── test_nico_final_v2/          # Primary folder with final_v2 config
-├── test_nico_folder2_final_v2/  # Secondary folder with final_v2 config
-├── test_nico_folder3_final_v2/  # Tertiary folder with final_v2 config
-├── test_nico_glow_effect/       # Primary folder with glow_effect config
-├── test_nico_folder2_glow_effect/ # Secondary folder with glow_effect config
-├── test_nico_folder3_glow_effect/ # Tertiary folder with glow_effect config
-└── [additional configurations...]
+k1_test_input/                    # Parent input folder
+├── fofof 345/                    # Subfolder 1
+├── nananane46/                   # Subfolder 2
+├── test_nico/                    # Subfolder 3
+└── test_nico - copia/            # Subfolder 4
+
+k1_output/                        # Output folder
+├── fofof 345_final_v2/           # Subfolder 1 with final_v2 config
+├── nananane46_final_v2/          # Subfolder 2 with final_v2 config
+├── test_nico_final_v2/           # Subfolder 3 with final_v2 config
+└── test_nico - copia_final_v2/   # Subfolder 4 with final_v2 config
 ```
 
 ## 🎯 **Common Use Cases**
+
+### **Configuration Editing**
+The `final_v2` configuration is now easily editable directly in the script:
+- **Location**: Lines 60-75 in `k1_multi_folder.py`
+- **Clear Comments**: Each parameter is documented with explanations
+- **Valid Ranges**: Parameter limits are specified for easy tuning
+- **No Restart Required**: Edit and save, then run the script
 
 ### **Production Workflow**
 ```bash
@@ -124,7 +135,7 @@ py k1_multi_folder.py --base-input "production_photos" --base-output "multiple_s
 py k1_test_all_features.py
 
 # Test specific configuration
-py k1_multi_folder.py --base-input "test_nico" --base-output "test_output" --config "final_v2" --verbose
+py k1_multi_folder.py --base-input "k1_test_input" --base-output "test_output" --config "final_v2" --verbose
 ```
 
 ### **Custom Branding**
@@ -146,10 +157,10 @@ py k1_multi_folder.py --base-input "company_photos" --base-output "branded_photo
 py k1_multi_folder.py --list-configs
 
 # Dry run to preview
-py k1_multi_folder.py --base-input "test_nico" --base-output "test_output" --config "final_v2" --dry-run
+py k1_multi_folder.py --base-input "k1_test_input" --base-output "test_output" --config "final_v2" --dry-run
 
 # Verbose logging
-py k1_multi_folder.py --base-input "test_nico" --base-output "test_output" --config "final_v2" --verbose
+py k1_multi_folder.py --base-input "k1_test_input" --base-output "test_output" --config "final_v2" --verbose
 ```
 
 ## 📊 **Performance Tips**
@@ -177,7 +188,7 @@ py k1_multi_folder.py --base-input "test_nico" --base-output "test_output" --con
 rmdir /s k1_output
 
 # Restart processing
-py k1_multi_folder.py --base-input "test_nico" --base-output "k1_output" --config "final_v2"
+py k1_multi_folder.py --base-input "k1_test_input" --base-output "k1_output" --config "final_v2"
 ```
 
 ---
@@ -192,5 +203,5 @@ py k1_multi_folder.py --base-input "test_nico" --base-output "k1_output" --confi
 
 ---
 
-*Last Updated: Based on test_nico_watermarked_final_v2 results*
+*Last Updated: Based on k1_test_input multi-folder structure*
 *Status: ✅ All features tested and working*
