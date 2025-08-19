@@ -39,7 +39,7 @@ class WatermarkProcessor:
                  custom_text: str = None, custom_text_position: str = 'center-bottom',
                  custom_text_color: str = '#000000', custom_text_shadow_color: str = '#FFFFFF',
                  custom_text_shadow_offset: int = 3, custom_text_shadow_blur: int = 1,
-                 custom_text_size_ratio: float = 0.04):
+                 custom_text_size_ratio: float = 0.04, custom_text_opacity: float = 0.8):
         """
         Initialize watermark processor.
         
@@ -65,6 +65,7 @@ class WatermarkProcessor:
             custom_text_shadow_offset: Offset of custom text drop shadow in pixels
             custom_text_shadow_blur: Blur radius of custom text drop shadow
             custom_text_size_ratio: Custom text font size as ratio of image height
+            custom_text_opacity: Custom text transparency (0.1-1.0)
         """
         self.png_watermark_path = png_watermark_path
         self.enable_numbering = enable_numbering
@@ -87,6 +88,7 @@ class WatermarkProcessor:
         self.custom_text_shadow_offset = custom_text_shadow_offset
         self.custom_text_shadow_blur = custom_text_shadow_blur
         self.custom_text_size_ratio = custom_text_size_ratio
+        self.custom_text_opacity = max(0.1, min(1.0, custom_text_opacity))
         
         # Load PNG watermark (if provided)
         self.png_watermark = self._load_png_watermark() if png_watermark_path else None
@@ -240,18 +242,21 @@ class WatermarkProcessor:
     
     def _calculate_custom_text_position(self, image: Image.Image, img_width: int, img_height: int, text_width: int, text_height: int) -> Tuple[int, int]:
         """Calculate custom text watermark position based on configuration."""
+        # Account for shadow offset to prevent cutting
+        shadow_buffer = max(self.custom_text_shadow_offset, 0)
+        
         if self.custom_text_position == 'top-left':
-            return (self.margin, self.margin)
+            return (self.margin + shadow_buffer, self.margin + shadow_buffer)
         elif self.custom_text_position == 'top-right':
-            return (img_width - text_width - self.margin, self.margin)
+            return (img_width - text_width - self.margin - shadow_buffer, self.margin + shadow_buffer)
         elif self.custom_text_position == 'bottom-left':
-            return (self.margin, img_height - text_height - self.margin)
+            return (self.margin + shadow_buffer, img_height - text_height - self.margin - shadow_buffer)
         elif self.custom_text_position == 'center':
             return ((img_width - text_width) // 2, (img_height - text_height) // 2)
         elif self.custom_text_position == 'center-bottom':
-            return ((img_width - text_width) // 2, img_height - text_height - self.margin)
+            return ((img_width - text_width) // 2, img_height - text_height - self.margin - shadow_buffer)
         else:  # center-bottom (default)
-            return ((img_width - text_width) // 2, img_height - text_height - self.margin)
+            return ((img_width - text_width) // 2, img_height - text_height - self.margin - shadow_buffer)
     
     def _resize_png_watermark(self, image: Image.Image) -> Image.Image:
         """Resize PNG watermark proportionally based on image size."""
@@ -390,8 +395,8 @@ class WatermarkProcessor:
         draw = ImageDraw.Draw(text_img)
         
         # Convert colors to RGBA
-        text_rgba = self._hex_to_rgba(self.custom_text_color, self.png_opacity)
-        shadow_rgba = self._hex_to_rgba(self.custom_text_shadow_color, self.png_opacity)
+        text_rgba = self._hex_to_rgba(self.custom_text_color, self.custom_text_opacity)
+        shadow_rgba = self._hex_to_rgba(self.custom_text_shadow_color, self.custom_text_opacity)
         
         # Draw drop shadow
         shadow_x = self.custom_text_shadow_offset
@@ -606,6 +611,8 @@ def main():
                        help='Blur radius of custom text drop shadow (default: 1)')
     parser.add_argument('--custom-text-size-ratio', type=float, default=0.04,
                        help='Custom text font size as ratio of image height (default: 0.04)')
+    parser.add_argument('--custom-text-opacity', type=float, default=0.8,
+                       help='Custom text transparency (0.1-1.0, default: 0.8)')
     parser.add_argument('--dry-run', action='store_true',
                        help='Show what would be processed without actually processing')
     
@@ -637,7 +644,8 @@ def main():
         custom_text_shadow_color=args.custom_text_shadow_color,
         custom_text_shadow_offset=args.custom_text_shadow_offset,
         custom_text_shadow_blur=args.custom_text_shadow_blur,
-        custom_text_size_ratio=args.custom_text_size_ratio
+        custom_text_size_ratio=args.custom_text_size_ratio,
+        custom_text_opacity=args.custom_text_opacity
     )
     
     # Get list of image files
