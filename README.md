@@ -127,6 +127,7 @@ py watermark_script.py --input-folder "path/to/input" --output-folder "path/to/o
 | `--custom-text-shadow-color` | Color of custom text shadow | `#FFFFFF` | Hex color or color name |
 | `--custom-text-shadow-offset` | Custom text shadow offset | `3` | 0-20 |
 | `--custom-text-shadow-blur` | Custom text shadow blur | `1` | 0-5 |
+| `--custom-text-shadow-opacity` | Custom text shadow transparency | `0.8` | 0.1-1.0 |
 | `--custom-text-size-ratio` | Custom text font size ratio | `0.04` | 0.01-0.1 |
 | `--custom-text-opacity` | Custom text transparency | `0.8` | 0.1-1.0 |
 | `--dry-run` | Show what would be processed | False | (flag) |
@@ -232,6 +233,12 @@ py watermark_script.py --input-folder "./photos" --output-folder "./watermarked"
 - **Canvas Padding**: 80px padding to ensure complete shadow visibility
 - **Position Adjustment**: Automatic positioning that accounts for shadow extension
 - **Unified System**: Both custom text and numbering watermarks use identical safety standards
+
+### ✨ **Enhanced Shadow Opacity Control** (NEW!)
+- **Custom Text Shadow Opacity**: `--custom-text-shadow-opacity` (0.1-1.0) - Control shadow transparency independently
+- **Number Watermark Shadow Opacity**: `--shadow-opacity` (0.1-1.0) - Control number shadow transparency independently
+- **Separate from Main Opacity**: Shadow opacity is now independent of main text/number opacity
+- **Professional Results**: Fine-tune shadow effects for perfect visual balance
 
 ### 🔧 **Technical Improvements**
 - **Enhanced Canvas Creation**: Intelligent sizing that accounts for shadow blur and offset effects
@@ -375,6 +382,12 @@ Extract specific number formats:
 # Professional numbering with enhanced shadows
 --shadow-offset 0 --shadow-blur 4 --number-opacity 0.35
 
+# Enhanced shadow opacity control (NEW!)
+--custom-text "hamacak1.com" --custom-text-shadow-opacity 0.4 --custom-text-shadow-blur 4
+
+# Perfect shadow balance with independent opacity
+--custom-text "K1-PRINT" --custom-text-shadow-color "#FFFFFF" --custom-text-shadow-opacity 0.3 --custom-text-opacity 0.8
+
 # Advanced shadow effects with large offsets and blur (prevents cutting)
 --custom-text "hamacak1.com" --google-font "Rubik" --custom-text-shadow-offset 15 --custom-text-shadow-blur 8 --custom-text-opacity 0.6
 
@@ -433,6 +446,27 @@ py watermark_script.py --input-folder "./photos" --output-folder "./large_shadow
 
 # Professional numbering with enhanced shadows
 py watermark_script.py --input-folder "./photos" --output-folder "./enhanced_numbers" --custom-text "© 2024" --shadow-offset 0 --shadow-blur 6 --number-opacity 0.4 --enable-numbering
+
+# Enhanced shadow opacity control (NEW!)
+py watermark_script.py --input-folder "./photos" --output-folder "./shadow_opacity" --custom-text "hamacak1.com" --custom-text-shadow-opacity 0.4 --custom-text-shadow-blur 4 --enable-numbering
+
+# Perfect shadow balance with independent opacity
+py watermark_script.py --input-folder "./photos" --output-folder "./perfect_balance" --custom-text "K1-PRINT" --custom-text-shadow-color "#FFFFFF" --custom-text-shadow-opacity 0.3 --custom-text-opacity 0.8 --enable-numbering
+
+# Enhanced number shadow opacity control
+py watermark_script.py --input-folder "./photos" --output-folder "./number_shadows" --custom-text "BRAND" --shadow-color "#FFFFFF" --shadow-opacity 0.6 --shadow-blur 3 --enable-numbering
+```
+
+#### **Enhanced Shadow Opacity Control** ✨ (NEW!)
+```bash
+# Enhanced shadow opacity control for custom text
+py watermark_script.py --input-folder "./photos" --output-folder "./shadow_opacity" --custom-text "hamacak1.com" --custom-text-shadow-opacity 0.4 --custom-text-shadow-blur 4 --enable-numbering
+
+# Perfect shadow balance with independent opacity
+py watermark_script.py --input-folder "./photos" --output-folder "./perfect_balance" --custom-text "K1-PRINT" --custom-text-shadow-color "#FFFFFF" --custom-text-shadow-opacity 0.3 --custom-text-opacity 0.8 --enable-numbering
+
+# Enhanced number shadow opacity control
+py watermark_script.py --input-folder "./photos" --output-folder "./number_shadows" --custom-text "BRAND" --shadow-color "#FFFFFF" --shadow-opacity 0.6 --shadow-blur 3 --enable-numbering
 ```
 
 ## File Structure
@@ -600,6 +634,8 @@ We welcome contributions to improve the watermark script! Here's how you can hel
 - **Advanced Canvas Management**: Intelligent sizing with 80px padding
 - **Unified Safety System**: Both watermarks use identical safety standards
 - **Professional Effects**: Glow effects, large shadows, and enhanced positioning
+- **Enhanced Shadow Opacity Control**: Independent shadow transparency for custom text and number watermarks
+- **Professional Shadow Effects**: Enhanced blur rendering with proper color and opacity handling
 
 ### 📞 **Community Support**
 - **GitHub Issues**: For bug reports and feature requests

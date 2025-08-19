@@ -42,6 +42,7 @@ None (all new options are optional)
 | `--shadow-color` | Drop shadow color | `#FFFFFF` | Hex/names |
 | `--shadow-offset` | Shadow offset in pixels | `3` | 0-20 |
 | `--shadow-blur` | Shadow blur radius | `1` | 0-5 |
+| `--shadow-opacity` | Number watermark shadow transparency | `0.8` | 0.1-1.0 |
 | `--custom-font` | Custom font file path | None | `.ttf`, `.otf` |
 | `--google-font` | Google Font name | None | Any Google Font |
 | `--custom-text` | Custom text watermark | None | Any text |
@@ -50,6 +51,7 @@ None (all new options are optional)
 | `--custom-text-shadow-color` | Custom text shadow color | `#FFFFFF` | Hex/names |
 | `--custom-text-shadow-offset` | Custom text shadow offset | `3` | 0-20 |
 | `--custom-text-shadow-blur` | Custom text shadow blur | `1` | 0-5 |
+| `--custom-text-shadow-opacity` | Custom text shadow transparency | `0.8` | 0.1-1.0 |
 | `--custom-text-size-ratio` | Custom text font size ratio | `0.04` | 0.01-0.1 |
 
 ## 🔧 **Technical Improvements**
@@ -78,6 +80,12 @@ None (all new options are optional)
 - Position calculation error handling
 - Comprehensive logging for all new features
 
+### **Enhanced Shadow Control** ✨
+- **Independent Shadow Opacity**: Custom text and number watermarks now have separate shadow opacity control
+- **Professional Shadow Effects**: Enhanced blur rendering with proper color and opacity handling
+- **Visual Balance**: Perfect shadow effects for any background or lighting condition
+- **Fine-Tuning**: Separate control over shadow transparency vs. main element opacity
+
 ## 📊 **Usage Examples**
 
 ### **Basic Customization**
@@ -99,6 +107,9 @@ None (all new options are optional)
 
 # Top-right positioning with blue text
 --number-position "top-right" --number-color "blue" --shadow-color "white"
+
+# Enhanced shadow control with opacity
+--shadow-color "#FFFFFF" --shadow-opacity 0.6 --shadow-blur 3
 ```
 
 ### **Google Fonts**
@@ -119,6 +130,12 @@ None (all new options are optional)
 
 # Professional custom text
 --custom-text "mypage.com" --google-font "Roboto" --custom-text-size-ratio 0.05
+
+# Enhanced shadow control with opacity
+--custom-text "hamacak1.com" --custom-text-shadow-opacity 0.4 --custom-text-shadow-blur 4
+
+# Perfect shadow balance
+--custom-text "K1-PRINT" --custom-text-shadow-color "#FFFFFF" --custom-text-shadow-opacity 0.3 --custom-text-opacity 0.8
 ```
 
 ### **Custom Fonts**

@@ -89,6 +89,12 @@ The `final_v2` configuration is now easily editable directly in the script:
 - **Valid Ranges**: Parameter limits are specified for easy tuning
 - **No Restart Required**: Edit and save, then run the script
 
+### **Enhanced Shadow Control** ✨
+- **Custom Text Shadow Opacity**: `--custom-text-shadow-opacity` (0.1-1.0) - Control shadow transparency independently
+- **Number Watermark Shadow Opacity**: `--shadow-opacity` (0.1-1.0) - Control number shadow transparency independently
+- **Separate from Main Opacity**: Shadow opacity is now independent of main text/number opacity
+- **Professional Results**: Fine-tune shadow effects for perfect visual balance
+
 ### **Configuration Profiles**
 
 #### **final_v2** (Tested & Confirmed)
@@ -98,11 +104,13 @@ The `final_v2` configuration is now easily editable directly in the script:
 --custom-text-position "center-bottom"
 --custom-text-size-ratio 0.05
 --margin 120
---custom-text-shadow-offset 15
---custom-text-shadow-blur 8
---custom-text-opacity 0.6
+--custom-text-shadow-offset 8
+--custom-text-shadow-blur 4
+--custom-text-shadow-opacity 0.8
+--custom-text-opacity 0.5
 --shadow-offset 0
---shadow-blur 6
+--shadow-blur 8
+--shadow-opacity 0.8
 --number-opacity 0.4
 ```
 
@@ -116,9 +124,11 @@ The `final_v2` configuration is now easily editable directly in the script:
 --custom-text-shadow-offset 0
 --custom-text-shadow-blur 8
 --custom-text-shadow-color "#FFFFFF"
+--custom-text-shadow-opacity 0.7
 --custom-text-opacity 0.8
 --shadow-offset 0
 --shadow-blur 4
+--shadow-opacity 0.6
 --number-opacity 0.3
 ```
 
@@ -131,9 +141,11 @@ The `final_v2` configuration is now easily editable directly in the script:
 --margin 200
 --custom-text-shadow-offset 25
 --custom-text-shadow-blur 12
+--custom-text-shadow-opacity 0.6
 --custom-text-opacity 0.5
 --shadow-offset 0
 --shadow-blur 8
+--shadow-opacity 0.5
 --number-opacity 0.25
 ```
 

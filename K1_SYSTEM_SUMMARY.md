@@ -103,6 +103,13 @@ All 10 tests passed successfully:
 
 ## 🎨 **Technical Improvements**
 
+### **Enhanced Shadow Control** ✨
+- **Custom Text Shadow Opacity**: `--custom-text-shadow-opacity` parameter for independent shadow transparency
+- **Number Watermark Shadow Opacity**: `--shadow-opacity` parameter for independent number shadow transparency
+- **Separate from Main Opacity**: Shadow opacity is now independent of main text/number opacity
+- **Professional Shadow Effects**: Enhanced blur rendering with proper color and opacity handling
+- **Visual Balance**: Perfect shadow effects for any background or lighting condition
+
 ### **Enhanced Folder Processing**
 - **Automatic Subfolder Detection**: Scans parent folder for all subdirectories
 - **Flexible Naming Support**: Handles any subfolder names and structures
@@ -114,6 +121,8 @@ All 10 tests passed successfully:
 - **Parameter Documentation**: Each setting includes explanations and valid ranges
 - **Inline Comments**: Clear guidance for customization without external tools
 - **Version Control Friendly**: Simple text-based configuration for easy tracking
+- **Enhanced Shadow Control**: Independent shadow opacity parameters for custom text and number watermarks
+- **Professional Tuning**: Separate control over shadow transparency vs. main element opacity
 
 ### **Shadow Cutting Prevention**
 - **Root Cause Identified**: Canvas sizing and positioning calculations
@@ -277,6 +286,8 @@ py k1_test_all_features.py
 - ✅ **Reliability**: All tests passed successfully
 - ✅ **Configuration Editing**: Easy inline editing with clear documentation
 - ✅ **Folder Structure**: Flexible subfolder detection and processing
+- ✅ **Shadow Opacity Control**: Independent shadow transparency for custom text and number watermarks
+- ✅ **Professional Shadow Effects**: Enhanced blur rendering with proper color and opacity handling
 
 ### **User Experience**
 - ✅ **Ease of Use**: Simple command-line interface

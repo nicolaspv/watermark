@@ -69,8 +69,11 @@ py k1_multi_folder.py --base-input "k1_test_input" --base-output "k1_output" --c
 # Override specific settings
 py k1_multi_folder.py --base-input "k1_test_input" --base-output "k1_output" --config "final_v2" --custom-text "K1-CUSTOM" --custom-text-opacity 0.7
 
-# Full custom configuration
-py k1_multi_folder.py --base-input "k1_test_input" --base-output "k1_output" --config "custom" --custom-text "K1-FULL" --google-font "Rubik" --custom-text-shadow-offset 20 --custom-text-shadow-blur 10 --custom-text-opacity 0.6
+# Full custom configuration with shadow opacity control
+py k1_multi_folder.py --base-input "k1_test_input" --base-output "k1_output" --config "custom" --custom-text "K1-FULL" --google-font "Rubik" --custom-text-shadow-offset 20 --custom-text-shadow-blur 10 --custom-text-shadow-opacity 0.5 --custom-text-opacity 0.6
+
+# Advanced shadow control
+py k1_multi_folder.py --base-input "k1_test_input" --base-output "k1_output" --config "custom" --custom-text "K1-ADVANCED" --custom-text-shadow-opacity 0.3 --shadow-opacity 0.7
 ```
 
 ### **Batch Processing**
@@ -116,6 +119,12 @@ The `final_v2` configuration is now easily editable directly in the script:
 - **Clear Comments**: Each parameter is documented with explanations
 - **Valid Ranges**: Parameter limits are specified for easy tuning
 - **No Restart Required**: Edit and save, then run the script
+
+### **Enhanced Shadow Opacity Control** ✨
+- **Custom Text Shadow**: `--custom-text-shadow-opacity` (0.1-1.0) - Independent shadow transparency
+- **Number Watermark Shadow**: `--shadow-opacity` (0.1-1.0) - Independent number shadow transparency
+- **Professional Tuning**: Separate shadow opacity from main text/number opacity
+- **Visual Balance**: Perfect shadow effects for any background or lighting condition
 
 ### **Production Workflow**
 ```bash
