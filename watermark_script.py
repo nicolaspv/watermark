@@ -34,12 +34,12 @@ class WatermarkProcessor:
                  font_size_ratio: float = 0.03, margin: int = 20,
                  number_pattern: str = r'\d+', number_position: str = 'bottom-right',
                  number_color: str = '#000000', shadow_color: str = '#FFFFFF',
-                 shadow_offset: int = 3, shadow_blur: int = 1,
+                 shadow_offset: int = 3, shadow_blur: int = 1, shadow_opacity: float = 0.8,
                  custom_font_path: str = None, google_font_name: str = None,
                  custom_text: str = None, custom_text_position: str = 'center-bottom',
                  custom_text_color: str = '#000000', custom_text_shadow_color: str = '#FFFFFF',
                  custom_text_shadow_offset: int = 3, custom_text_shadow_blur: int = 1,
-                 custom_text_size_ratio: float = 0.04, custom_text_opacity: float = 0.8):
+                 custom_text_shadow_opacity: float = 0.8, custom_text_size_ratio: float = 0.04, custom_text_opacity: float = 0.8):
         """
         Initialize watermark processor.
         
@@ -64,6 +64,7 @@ class WatermarkProcessor:
             custom_text_shadow_color: Color of custom text drop shadow (hex color or color name)
             custom_text_shadow_offset: Offset of custom text drop shadow in pixels
             custom_text_shadow_blur: Blur radius of custom text drop shadow
+            custom_text_shadow_opacity: Custom text shadow transparency (0.1-1.0)
             custom_text_size_ratio: Custom text font size as ratio of image height
             custom_text_opacity: Custom text transparency (0.1-1.0)
         """
@@ -87,6 +88,7 @@ class WatermarkProcessor:
         self.custom_text_shadow_color = custom_text_shadow_color
         self.custom_text_shadow_offset = custom_text_shadow_offset
         self.custom_text_shadow_blur = custom_text_shadow_blur
+        self.custom_text_shadow_opacity = max(0.1, min(1.0, custom_text_shadow_opacity))
         self.custom_text_size_ratio = custom_text_size_ratio
         self.custom_text_opacity = max(0.1, min(1.0, custom_text_opacity))
         
@@ -432,7 +434,7 @@ class WatermarkProcessor:
         
         # Convert colors to RGBA
         text_rgba = self._hex_to_rgba(self.custom_text_color, self.custom_text_opacity)
-        shadow_rgba = self._hex_to_rgba(self.custom_text_shadow_color, self.custom_text_opacity)
+        shadow_rgba = self._hex_to_rgba(self.custom_text_shadow_color, self.custom_text_shadow_opacity)
         
         # Calculate center position for text within canvas
         text_x = (canvas_width - text_width) // 2
@@ -646,6 +648,8 @@ def main():
                        help='Offset of drop shadow in pixels (default: 3)')
     parser.add_argument('--shadow-blur', type=int, default=1,
                        help='Blur radius of drop shadow (default: 1)')
+    parser.add_argument('--shadow-opacity', type=float, default=0.8,
+                       help='Number watermark shadow transparency (0.1-1.0, default: 0.8)')
     parser.add_argument('--custom-font', default=None,
                        help='Path to custom font file (.ttf, .otf)')
     parser.add_argument('--google-font', default=None,
@@ -662,6 +666,8 @@ def main():
                        help='Offset of custom text drop shadow in pixels (default: 3)')
     parser.add_argument('--custom-text-shadow-blur', type=int, default=1,
                        help='Blur radius of custom text drop shadow (default: 1)')
+    parser.add_argument('--custom-text-shadow-opacity', type=float, default=0.8,
+                       help='Custom text shadow transparency (0.1-1.0, default: 0.8)')
     parser.add_argument('--custom-text-size-ratio', type=float, default=0.04,
                        help='Custom text font size as ratio of image height (default: 0.04)')
     parser.add_argument('--custom-text-opacity', type=float, default=0.8,
@@ -689,6 +695,7 @@ def main():
         shadow_color=args.shadow_color,
         shadow_offset=args.shadow_offset,
         shadow_blur=args.shadow_blur,
+        shadow_opacity=args.shadow_opacity,
         custom_font_path=args.custom_font,
         google_font_name=args.google_font,
         custom_text=args.custom_text,
@@ -697,6 +704,7 @@ def main():
         custom_text_shadow_color=args.custom_text_shadow_color,
         custom_text_shadow_offset=args.custom_text_shadow_offset,
         custom_text_shadow_blur=args.custom_text_shadow_blur,
+        custom_text_shadow_opacity=args.custom_text_shadow_opacity,
         custom_text_size_ratio=args.custom_text_size_ratio,
         custom_text_opacity=args.custom_text_opacity
     )
