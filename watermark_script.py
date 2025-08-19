@@ -330,16 +330,15 @@ class WatermarkProcessor:
         text_x = (canvas_width - text_width) // 2
         text_y = (canvas_height - text_height) // 2
         
-        # Draw drop shadow
-        shadow_x = text_x + self.shadow_offset
-        shadow_y = text_y + self.shadow_offset
-        draw.text((shadow_x, shadow_y), number, fill=shadow_rgba, font=font)
-        
         # Apply blur to shadow if specified
         if self.shadow_blur > 0:
             # Create a separate shadow layer for blurring to prevent cutting
             shadow_layer = Image.new('RGBA', (canvas_width, canvas_height), (0, 0, 0, 0))
             shadow_draw = ImageDraw.Draw(shadow_layer)
+            
+            # Draw shadow with the specified shadow color
+            shadow_x = text_x + self.shadow_offset
+            shadow_y = text_y + self.shadow_offset
             shadow_draw.text((shadow_x, shadow_y), number, fill=shadow_rgba, font=font)
             
             # Apply blur to shadow layer
@@ -350,6 +349,11 @@ class WatermarkProcessor:
             
             # Redraw the main text on top
             draw = ImageDraw.Draw(text_img)
+        else:
+            # No blur - draw simple shadow
+            shadow_x = text_x + self.shadow_offset
+            shadow_y = text_y + self.shadow_offset
+            draw.text((shadow_x, shadow_y), number, fill=shadow_rgba, font=font)
         
         # Draw main text
         draw.text((text_x, text_y), number, fill=number_rgba, font=font)
@@ -434,16 +438,15 @@ class WatermarkProcessor:
         text_x = (canvas_width - text_width) // 2
         text_y = (canvas_height - text_height) // 2
         
-        # Draw drop shadow
-        shadow_x = text_x + self.custom_text_shadow_offset
-        shadow_y = text_y + self.custom_text_shadow_offset
-        draw.text((shadow_x, shadow_y), text, fill=shadow_rgba, font=font)
-        
         # Apply blur to shadow if specified
         if self.custom_text_shadow_blur > 0:
             # Create a separate shadow layer for blurring to prevent cutting
             shadow_layer = Image.new('RGBA', (canvas_width, canvas_height), (0, 0, 0, 0))
             shadow_draw = ImageDraw.Draw(shadow_layer)
+            
+            # Draw shadow with the specified shadow color
+            shadow_x = text_x + self.custom_text_shadow_offset
+            shadow_y = text_y + self.custom_text_shadow_offset
             shadow_draw.text((shadow_x, shadow_y), text, fill=shadow_rgba, font=font)
             
             # Apply blur to shadow layer
@@ -454,6 +457,11 @@ class WatermarkProcessor:
             
             # Redraw the main text on top
             draw = ImageDraw.Draw(text_img)
+        else:
+            # No blur - draw simple shadow
+            shadow_x = text_x + self.custom_text_shadow_offset
+            shadow_y = text_y + self.custom_text_shadow_offset
+            draw.text((shadow_x, shadow_y), text, fill=shadow_rgba, font=font)
         
         # Draw main text
         draw.text((text_x, text_y), text, fill=text_rgba, font=font)
