@@ -58,8 +58,8 @@ class K1MultiFolderProcessor:
                 "custom_text_position": "center-bottom", # Position: top-left, top-right, center, center-bottom, bottom-left, bottom-right
                 "custom_text_size_ratio": "0.05",        # Text size (0.01-0.1, higher = larger)
                 "margin": "120",                         # Margin from edges in pixels
-                "custom_text_shadow_offset": "10",       # Shadow offset in pixels
-                "custom_text_shadow_blur": "8",          # Shadow blur radius
+                "custom_text_shadow_offset": "8",        # Shadow offset in pixels (reduced from 10 to 8)
+                "custom_text_shadow_blur": "4",          # Shadow blur radius (increased from 1 to 4 for better effect)
                 "custom_text_opacity": "0.5",            # Text transparency (0.1-1.0)
                 "shadow_offset": "0",                    # Number shadow offset
                 "shadow_blur": "8",                      # Number shadow blur

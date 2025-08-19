@@ -227,7 +227,9 @@ class WatermarkProcessor:
         """Calculate number watermark position based on configuration."""
         # Add extra safety margin for shadow effects to prevent cutting (same as custom text)
         # The watermark canvas now properly accounts for shadows, but we need safety margins for positioning
-        safety_margin = max(self.shadow_offset + self.shadow_blur + 20, 30)
+        # For small blur values, we need more safety margin to prevent cutting
+        blur_safety = max(self.shadow_blur * 2, 15)  # Minimum 15px for blur safety
+        safety_margin = max(self.shadow_offset + blur_safety + 25, 40)  # Increased from 20 to 25, min from 30 to 40
         
         # Approximate number watermark dimensions (these are now canvas dimensions including shadows)
         number_width = 100
@@ -250,7 +252,9 @@ class WatermarkProcessor:
         # This is passed from _calculate_watermark_positions after creating the watermark
         
         # Add extra safety margin for shadow effects to prevent cutting
-        safety_margin = max(self.custom_text_shadow_offset + self.custom_text_shadow_blur + 20, 30)
+        # For small blur values, we need more safety margin to prevent cutting
+        blur_safety = max(self.custom_text_shadow_blur * 2, 15)  # Minimum 15px for blur safety
+        safety_margin = max(self.custom_text_shadow_offset + blur_safety + 25, 40)  # Increased from 20 to 25, min from 30 to 40
         
         if self.custom_text_position == 'top-left':
             return (self.margin + safety_margin, self.margin + safety_margin)
@@ -309,11 +313,12 @@ class WatermarkProcessor:
         text_height = bbox[3] - bbox[1]
         
         # Create canvas with proper dimensions - account for shadow offset AND blur
-        # Blur effect extends the shadow beyond the offset
-        blur_extension = max(self.shadow_blur * 2, 0)
-        # Increase padding significantly to prevent any cutting (same as custom text)
-        canvas_width = text_width + self.shadow_offset + blur_extension + 80
-        canvas_height = text_height + self.shadow_offset + blur_extension + 80
+        # Blur effect extends the shadow beyond the offset - need more space for proper blur rendering
+        # For small blur values, we need more padding to prevent cutting
+        blur_extension = max(self.shadow_blur * 3, 20)  # Increased from 2x to 3x + minimum 20px
+        # Increase padding significantly to prevent any cutting - especially for bottom shadows
+        canvas_width = text_width + self.shadow_offset + blur_extension + 100
+        canvas_height = text_height + self.shadow_offset + blur_extension + 120  # Extra height for bottom shadows
         text_img = Image.new('RGBA', (canvas_width, canvas_height), (0, 0, 0, 0))
         draw = ImageDraw.Draw(text_img)
         
@@ -332,10 +337,19 @@ class WatermarkProcessor:
         
         # Apply blur to shadow if specified
         if self.shadow_blur > 0:
-            text_img = text_img.filter(ImageFilter.GaussianBlur(radius=self.shadow_blur))
-            # Redraw shadow after blur
+            # Create a separate shadow layer for blurring to prevent cutting
+            shadow_layer = Image.new('RGBA', (canvas_width, canvas_height), (0, 0, 0, 0))
+            shadow_draw = ImageDraw.Draw(shadow_layer)
+            shadow_draw.text((shadow_x, shadow_y), number, fill=shadow_rgba, font=font)
+            
+            # Apply blur to shadow layer
+            shadow_layer = shadow_layer.filter(ImageFilter.GaussianBlur(radius=self.shadow_blur))
+            
+            # Composite the blurred shadow onto the main image
+            text_img = Image.alpha_composite(text_img, shadow_layer)
+            
+            # Redraw the main text on top
             draw = ImageDraw.Draw(text_img)
-            draw.text((shadow_x, shadow_y), number, fill=shadow_rgba, font=font)
         
         # Draw main text
         draw.text((text_x, text_y), number, fill=number_rgba, font=font)
@@ -403,11 +417,12 @@ class WatermarkProcessor:
         text_height = bbox[3] - bbox[1]
         
         # Create canvas with proper dimensions - account for shadow offset AND blur
-        # Blur effect extends the shadow beyond the offset
-        blur_extension = max(self.custom_text_shadow_blur * 2, 0)
-        # Increase padding significantly to prevent any cutting
-        canvas_width = text_width + self.custom_text_shadow_offset + blur_extension + 80
-        canvas_height = text_height + self.custom_text_shadow_offset + blur_extension + 80
+        # Blur effect extends the shadow beyond the offset - need more space for proper blur rendering
+        # For small blur values, we need more padding to prevent cutting
+        blur_extension = max(self.custom_text_shadow_blur * 3, 20)  # Increased from 2x to 3x + minimum 20px
+        # Increase padding significantly to prevent any cutting - especially for bottom shadows
+        canvas_width = text_width + self.custom_text_shadow_offset + blur_extension + 100
+        canvas_height = text_height + self.custom_text_shadow_offset + blur_extension + 120  # Extra height for bottom shadows
         text_img = Image.new('RGBA', (canvas_width, canvas_height), (0, 0, 0, 0))
         draw = ImageDraw.Draw(text_img)
         
@@ -426,10 +441,19 @@ class WatermarkProcessor:
         
         # Apply blur to shadow if specified
         if self.custom_text_shadow_blur > 0:
-            text_img = text_img.filter(ImageFilter.GaussianBlur(radius=self.custom_text_shadow_blur))
-            # Redraw shadow after blur
+            # Create a separate shadow layer for blurring to prevent cutting
+            shadow_layer = Image.new('RGBA', (canvas_width, canvas_height), (0, 0, 0, 0))
+            shadow_draw = ImageDraw.Draw(shadow_layer)
+            shadow_draw.text((shadow_x, shadow_y), text, fill=shadow_rgba, font=font)
+            
+            # Apply blur to shadow layer
+            shadow_layer = shadow_layer.filter(ImageFilter.GaussianBlur(radius=self.custom_text_shadow_blur))
+            
+            # Composite the blurred shadow onto the main image
+            text_img = Image.alpha_composite(text_img, shadow_layer)
+            
+            # Redraw the main text on top
             draw = ImageDraw.Draw(text_img)
-            draw.text((shadow_x, shadow_y), text, fill=shadow_rgba, font=font)
         
         # Draw main text
         draw.text((text_x, text_y), text, fill=text_rgba, font=font)
