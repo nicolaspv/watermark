@@ -225,25 +225,29 @@ class WatermarkProcessor:
     
     def _calculate_number_position(self, image: Image.Image, img_width: int, img_height: int) -> Tuple[int, int]:
         """Calculate number watermark position based on configuration."""
+        # Account for shadow blur to prevent cutting (no offset, but blur extends)
+        shadow_buffer = max(self.shadow_blur + 3, 0)
+        
         # Approximate number watermark dimensions
         number_width = 100
         number_height = 30
         
         if self.number_position == 'top-left':
-            return (self.margin, self.margin)
+            return (self.margin + shadow_buffer, self.margin + shadow_buffer)
         elif self.number_position == 'top-right':
-            return (img_width - number_width - self.margin, self.margin)
+            return (img_width - number_width - self.margin - shadow_buffer, self.margin + shadow_buffer)
         elif self.number_position == 'bottom-left':
-            return (self.margin, img_height - number_height - self.margin)
+            return (self.margin + shadow_buffer, img_height - number_height - self.margin - shadow_buffer)
         elif self.number_position == 'center':
             return ((img_width - number_width) // 2, (img_height - number_height) // 2)
         else:  # bottom-right (default)
-            return (img_width - number_width - self.margin, img_height - number_height - self.margin)
+            return (img_width - number_width - self.margin - shadow_buffer, img_height - number_height - self.margin - shadow_buffer)
     
     def _calculate_custom_text_position(self, image: Image.Image, img_width: int, img_height: int, text_width: int, text_height: int) -> Tuple[int, int]:
         """Calculate custom text watermark position based on configuration."""
-        # Account for shadow offset to prevent cutting
-        shadow_buffer = max(self.custom_text_shadow_offset, 0)
+        # Account for shadow offset AND blur to prevent cutting
+        # Shadow extends by offset + blur radius + extra safety buffer
+        shadow_buffer = max(self.custom_text_shadow_offset + self.custom_text_shadow_blur + 5, 0)
         
         if self.custom_text_position == 'top-left':
             return (self.margin + shadow_buffer, self.margin + shadow_buffer)
