@@ -225,39 +225,45 @@ class WatermarkProcessor:
     
     def _calculate_number_position(self, image: Image.Image, img_width: int, img_height: int) -> Tuple[int, int]:
         """Calculate number watermark position based on configuration."""
-        # The watermark canvas now properly accounts for shadows, so we just need basic positioning
-        # Approximate number watermark dimensions
+        # Add extra safety margin for shadow effects to prevent cutting (same as custom text)
+        # The watermark canvas now properly accounts for shadows, but we need safety margins for positioning
+        safety_margin = max(self.shadow_offset + self.shadow_blur + 20, 30)
+        
+        # Approximate number watermark dimensions (these are now canvas dimensions including shadows)
         number_width = 100
         number_height = 30
         
         if self.number_position == 'top-left':
-            return (self.margin, self.margin)
+            return (self.margin + safety_margin, self.margin + safety_margin)
         elif self.number_position == 'top-right':
-            return (img_width - number_width - self.margin, self.margin)
+            return (img_width - number_width - self.margin - safety_margin, self.margin + safety_margin)
         elif self.number_position == 'bottom-left':
-            return (self.margin, img_height - number_height - self.margin)
+            return (self.margin + safety_margin, img_height - number_height - self.margin - safety_margin)
         elif self.number_position == 'center':
             return ((img_width - number_width) // 2, (img_height - number_height) // 2)
         else:  # bottom-right (default)
-            return (img_width - number_width - self.margin, img_height - number_height - self.margin)
+            return (img_width - number_width - self.margin - safety_margin, img_height - number_height - self.margin - safety_margin)
     
     def _calculate_custom_text_position(self, image: Image.Image, img_width: int, img_height: int, text_width: int, text_height: int) -> Tuple[int, int]:
         """Calculate custom text watermark position based on configuration."""
-        # The watermark canvas now properly accounts for shadows, so we just need basic positioning
-        # The canvas dimensions already include shadow space, so no additional buffer needed
+        # IMPORTANT: text_width and text_height are actually the CANVAS dimensions (including shadows)
+        # This is passed from _calculate_watermark_positions after creating the watermark
+        
+        # Add extra safety margin for shadow effects to prevent cutting
+        safety_margin = max(self.custom_text_shadow_offset + self.custom_text_shadow_blur + 20, 30)
         
         if self.custom_text_position == 'top-left':
-            return (self.margin, self.margin)
+            return (self.margin + safety_margin, self.margin + safety_margin)
         elif self.custom_text_position == 'top-right':
-            return (img_width - text_width - self.margin, self.margin)
+            return (img_width - text_width - self.margin - safety_margin, self.margin + safety_margin)
         elif self.custom_text_position == 'bottom-left':
-            return (self.margin, img_height - text_height - self.margin)
+            return (self.margin + safety_margin, img_height - text_height - self.margin - safety_margin)
         elif self.custom_text_position == 'center':
             return ((img_width - text_width) // 2, (img_height - text_height) // 2)
         elif self.custom_text_position == 'center-bottom':
-            return ((img_width - text_width) // 2, img_height - text_height - self.margin)
+            return ((img_width - text_width) // 2, img_height - text_height - self.margin - safety_margin)
         else:  # center-bottom (default)
-            return ((img_width - text_width) // 2, img_height - text_height - self.margin)
+            return ((img_width - text_width) // 2, img_height - text_height - self.margin - safety_margin)
     
     def _resize_png_watermark(self, image: Image.Image) -> Image.Image:
         """Resize PNG watermark proportionally based on image size."""
@@ -305,8 +311,9 @@ class WatermarkProcessor:
         # Create canvas with proper dimensions - account for shadow offset AND blur
         # Blur effect extends the shadow beyond the offset
         blur_extension = max(self.shadow_blur * 2, 0)
-        canvas_width = text_width + self.shadow_offset + blur_extension + 40
-        canvas_height = text_height + self.shadow_offset + blur_extension + 40
+        # Increase padding significantly to prevent any cutting (same as custom text)
+        canvas_width = text_width + self.shadow_offset + blur_extension + 80
+        canvas_height = text_height + self.shadow_offset + blur_extension + 80
         text_img = Image.new('RGBA', (canvas_width, canvas_height), (0, 0, 0, 0))
         draw = ImageDraw.Draw(text_img)
         
@@ -398,8 +405,9 @@ class WatermarkProcessor:
         # Create canvas with proper dimensions - account for shadow offset AND blur
         # Blur effect extends the shadow beyond the offset
         blur_extension = max(self.custom_text_shadow_blur * 2, 0)
-        canvas_width = text_width + self.custom_text_shadow_offset + blur_extension + 40
-        canvas_height = text_height + self.custom_text_shadow_offset + blur_extension + 40
+        # Increase padding significantly to prevent any cutting
+        canvas_width = text_width + self.custom_text_shadow_offset + blur_extension + 80
+        canvas_height = text_height + self.custom_text_shadow_offset + blur_extension + 80
         text_img = Image.new('RGBA', (canvas_width, canvas_height), (0, 0, 0, 0))
         draw = ImageDraw.Draw(text_img)
         

@@ -26,6 +26,10 @@ A powerful Python script for bulk watermarking images with custom PNG logos, cus
 - **Professional Output**: Drop shadow effects, anti-aliased text, and high-quality LANCZOS resampling
 - **Advanced Font Support**: Google Fonts, custom fonts, and system font fallbacks
 - **Comprehensive Logging**: Detailed progress tracking, error reporting, and dry-run mode
+- **🆕 Enhanced Shadow Effects**: Support for large shadow offsets (up to 20px) and blur effects (up to 5px)
+- **🆕 Shadow Cutting Prevention**: Advanced positioning with automatic safety margins
+- **🆕 Professional Glow Effects**: Create stunning glow effects with zero offset and high blur
+- **🆕 Unified Safety System**: Both watermarks use identical enhanced safety standards
 
 ## Installation
 
@@ -124,6 +128,7 @@ py watermark_script.py --input-folder "path/to/input" --output-folder "path/to/o
 | `--custom-text-shadow-offset` | Custom text shadow offset | `3` | 0-20 |
 | `--custom-text-shadow-blur` | Custom text shadow blur | `1` | 0-5 |
 | `--custom-text-size-ratio` | Custom text font size ratio | `0.04` | 0.01-0.1 |
+| `--custom-text-opacity` | Custom text transparency | `0.8` | 0.1-1.0 |
 | `--dry-run` | Show what would be processed | False | (flag) |
 
 ## Examples
@@ -199,6 +204,8 @@ py watermark_script.py --input-folder "./photos" --output-folder "./watermarked"
 - **Size**: Proportional to image dimensions (default: 4% of image height)
 - **Fonts**: Google Fonts, custom fonts, or system font fallbacks
 - **Use Cases**: Branding, URLs, social media tags, copyright notices
+- **Enhanced Safety**: Advanced positioning with automatic safety margins to prevent shadow cutting
+- **Canvas Optimization**: Intelligent canvas sizing that accounts for shadow blur and offset effects
 
 ### 🔢 **Number Watermark**
 - **Position**: 5 configurable positions (default: bottom-right)
@@ -207,6 +214,8 @@ py watermark_script.py --input-folder "./photos" --output-folder "./watermarked"
 - **Font**: Professional fonts with fallback to system default
 - **Size**: Proportional to image dimensions (default: 3% of image height)
 - **Pattern Examples**: `IMG_001.jpg` → "001", `photo_123_2024.png` → "123"
+- **Enhanced Safety**: Advanced positioning with automatic safety margins to prevent shadow cutting
+- **Canvas Optimization**: Intelligent canvas sizing that accounts for shadow blur and offset effects
 
 ### 🎨 **Advanced Features**
 - **Drop Shadows**: Configurable offset, blur, and colors for professional look
@@ -214,6 +223,34 @@ py watermark_script.py --input-folder "./photos" --output-folder "./watermarked"
 - **Color Support**: Hex codes, color names, and opacity control
 - **Positioning System**: Smart calculation based on image dimensions and margins
 - **Quality Preservation**: 100% JPEG quality, no optimization, exact original quality
+- **Enhanced Safety Margins**: Advanced shadow positioning with automatic safety calculations to prevent cutting
+- **Canvas Optimization**: Intelligent canvas sizing that accounts for shadow blur and offset effects
+
+### 🛡️ **Shadow Cutting Prevention System**
+- **Automatic Safety Calculations**: Dynamic safety margins based on shadow settings
+- **Formula**: `safety_margin = max(offset + blur + 20, 30)` pixels
+- **Canvas Padding**: 80px padding to ensure complete shadow visibility
+- **Position Adjustment**: Automatic positioning that accounts for shadow extension
+- **Unified System**: Both custom text and numbering watermarks use identical safety standards
+
+### 🔧 **Technical Improvements**
+- **Enhanced Canvas Creation**: Intelligent sizing that accounts for shadow blur and offset effects
+- **Position Calculation**: Advanced algorithms that prevent any watermark cutting
+- **Memory Optimization**: Efficient canvas management with proper padding
+- **Cross-Platform Compatibility**: Consistent behavior across Windows, macOS, and Linux
+
+### 🛡️ **Latest Enhancements (v2.0+)**
+- **Shadow Cutting Prevention**: Advanced positioning algorithms that automatically prevent shadow cutting
+- **Enhanced Canvas Sizing**: 80px padding with intelligent blur and offset calculations
+- **Safety Margin System**: Dynamic safety margins based on shadow settings (offset + blur + buffer)
+- **Unified Safety Standards**: Both custom text and numbering watermarks use the same enhanced safety system
+- **Professional Shadow Effects**: Support for large shadow offsets (up to 20px) and blur effects (up to 5px)
+
+### 🆕 **New CLI Arguments (v2.0+)**
+- **`--custom-text-opacity`**: Independent control over custom text transparency (0.1-1.0, default: 0.8)
+- **Enhanced Shadow Controls**: All shadow parameters now support larger ranges for professional effects
+- **Improved Font Support**: Better Google Font integration and fallback systems
+- **Advanced Positioning**: Enhanced positioning calculations with automatic safety margins
 
 ### Supported Image Formats
 - JPEG (.jpg, .jpeg)
@@ -331,7 +368,18 @@ Extract specific number formats:
 
 # Custom text with Google Font
 --custom-text "mypage.com" --google-font "Roboto" --custom-text-size-ratio 0.05
-```
+
+# Enhanced shadow effects with safety margins (prevents cutting)
+--custom-text "hamacak1.com" --google-font "Rubik" --custom-text-shadow-offset 10 --custom-text-shadow-blur 5 --custom-text-opacity 0.5
+
+# Professional numbering with enhanced shadows
+--shadow-offset 0 --shadow-blur 4 --number-opacity 0.35
+
+# Advanced shadow effects with large offsets and blur (prevents cutting)
+--custom-text "hamacak1.com" --google-font "Rubik" --custom-text-shadow-offset 15 --custom-text-shadow-blur 8 --custom-text-opacity 0.6
+
+# Professional glow effect (no offset, high blur)
+--custom-text "BRAND" --custom-text-shadow-offset 0 --custom-text-shadow-blur 6 --custom-text-shadow-color "#FFFFFF"
 
 ### Batch Processing Multiple Folders
 
@@ -372,6 +420,19 @@ py watermark_script.py --input-folder "./portfolio" --output-folder "./copyright
 ```bash
 # Product images with branding
 py watermark_script.py --input-folder "./products" --output-folder "./branded_products" --png-watermark "./brand_logo.png" --custom-text "mypage.com" --enable-numbering --number-pattern "PROD_(\d+)"
+
+### 🆕 **Latest Feature Examples (v2.0+)**
+
+#### **Enhanced Shadow Effects**
+```bash
+# Professional glow effect with large blur
+py watermark_script.py --input-folder "./photos" --output-folder "./glow_effect" --custom-text "BRAND" --custom-text-shadow-offset 0 --custom-text-shadow-blur 8 --custom-text-shadow-color "#FFFFFF" --enable-numbering
+
+# Large shadow offset with blur (prevents cutting automatically)
+py watermark_script.py --input-folder "./photos" --output-folder "./large_shadow" --custom-text "mypage.com" --custom-text-shadow-offset 20 --custom-text-shadow-blur 5 --custom-text-opacity 0.7 --enable-numbering
+
+# Professional numbering with enhanced shadows
+py watermark_script.py --input-folder "./photos" --output-folder "./enhanced_numbers" --custom-text "© 2024" --shadow-offset 0 --shadow-blur 6 --number-opacity 0.4 --enable-numbering
 ```
 
 ## File Structure
@@ -446,6 +507,22 @@ watermark-01/
   - Consider reducing image resolution first
   - Close other memory-intensive applications
 
+**Shadow cutting or incomplete watermarks**
+- **Cause**: Insufficient safety margins for shadow effects
+- **Solution**:
+  - The script now automatically calculates safety margins
+  - Uses enhanced canvas sizing with 80px padding
+  - Applies safety margins based on shadow offset + blur + buffer
+  - No manual configuration needed
+
+**Large shadow effects not working properly**
+- **Cause**: Shadow effects may exceed default canvas boundaries
+- **Solution**:
+  - Enhanced canvas sizing automatically handles large shadows
+  - Safety margins prevent any cutting issues
+  - Support for shadow offsets up to 20px and blur up to 5px
+  - Professional glow effects with `--shadow-offset 0 --shadow-blur 6`
+
 #### **"Either PNG watermark file or custom text must be provided"**
 - **Cause**: No watermark source specified
 - **Solution**:
@@ -517,8 +594,21 @@ We welcome contributions to improve the watermark script! Here's how you can hel
 - **Quality Problems**: Ensure output format and quality settings
 - **Memory Errors**: Process smaller batches or reduce image resolution
 
+### 🆕 **Latest Features Support (v2.0+)**
+- **Enhanced Shadow Effects**: Support for large shadow offsets and blur effects
+- **Shadow Cutting Prevention**: Automatic safety margins prevent any watermark cutting
+- **Advanced Canvas Management**: Intelligent sizing with 80px padding
+- **Unified Safety System**: Both watermarks use identical safety standards
+- **Professional Effects**: Glow effects, large shadows, and enhanced positioning
+
 ### 📞 **Community Support**
 - **GitHub Issues**: For bug reports and feature requests
 - **GitHub Discussions**: For questions and community help
 - **Code Examples**: Check the `enhanced_examples.py` script
 - **Documentation**: Review all markdown files for detailed information
+
+### 🆕 **Latest Features Documentation**
+- **Enhanced Examples**: Check `enhanced_examples.py` for latest feature demonstrations
+- **Shadow Effects Guide**: Comprehensive examples of professional shadow and glow effects
+- **Safety Features**: Detailed explanation of shadow cutting prevention system
+- **Advanced Positioning**: Guide to using enhanced positioning with safety margins
