@@ -40,7 +40,8 @@ class WatermarkProcessor:
                  custom_text_color: str = '#000000', custom_text_shadow_color: str = '#FFFFFF',
                  custom_text_shadow_offset: int = 3, custom_text_shadow_blur: int = 1,
                  custom_text_shadow_opacity: float = 0.8, custom_text_size_ratio: float = 0.04, custom_text_opacity: float = 0.8,
-                 png_position: str = 'center-bottom', png_x_offset: int = 0, png_y_offset: int = 0):
+                 png_position: str = 'center-bottom', png_x_offset: int = 0, png_y_offset: int = 0,
+                 number_x_offset: int = 0, number_y_offset: int = 0):
         """
         Initialize watermark processor.
         
@@ -69,6 +70,10 @@ class WatermarkProcessor:
             custom_text_size_ratio: Custom text font size as ratio of image height
             custom_text_opacity: Custom text transparency (0.1-1.0)
             png_position: Position of PNG watermark ('top-left', 'top-right', 'bottom-left', 'bottom-right', 'center', 'center-bottom')
+            png_x_offset: X offset for PNG watermark position (can be negative)
+            png_y_offset: Y offset for PNG watermark position (can be negative)
+            number_x_offset: X offset for number watermark position (can be negative)
+            number_y_offset: Y offset for number watermark position (can be negative)
         """
         self.png_watermark_path = png_watermark_path
         self.enable_numbering = enable_numbering
@@ -96,6 +101,8 @@ class WatermarkProcessor:
         self.png_position = png_position
         self.png_x_offset = png_x_offset
         self.png_y_offset = png_y_offset
+        self.number_x_offset = number_x_offset
+        self.number_y_offset = number_y_offset
         
         # Load PNG watermark (if provided)
         self.png_watermark = self._load_png_watermark() if png_watermark_path else None
@@ -224,12 +231,13 @@ class WatermarkProcessor:
             # No watermark
             png_x, png_y = 0, 0
         
-        # Number watermark position based on configuration
-        number_x, number_y = self._calculate_number_position(image, img_width, img_height)
+        # Number watermark position will be calculated later in process_image
+        # after we have the actual number watermark dimensions
+        number_x, number_y = 0, 0
         
         return (png_x, png_y), (number_x, number_y)
     
-    def _calculate_number_position(self, image: Image.Image, img_width: int, img_height: int) -> Tuple[int, int]:
+    def _calculate_number_position(self, image: Image.Image, img_width: int, img_height: int, number_width: int = None, number_height: int = None) -> Tuple[int, int]:
         """Calculate number watermark position based on configuration."""
         # Add extra safety margin for shadow effects to prevent cutting (same as custom text)
         # The watermark canvas now properly accounts for shadows, but we need safety margins for positioning
@@ -237,20 +245,36 @@ class WatermarkProcessor:
         blur_safety = max(self.shadow_blur * 2, 15)  # Minimum 15px for blur safety
         safety_margin = max(self.shadow_offset + blur_safety + 25, 40)  # Increased from 20 to 25, min from 30 to 40
         
-        # Approximate number watermark dimensions (these are now canvas dimensions including shadows)
-        number_width = 100
-        number_height = 30
+        # Use actual number dimensions if provided, otherwise use approximate dimensions
+        if number_width is None:
+            number_width = 100  # Approximate width for initial calculation
+        if number_height is None:
+            number_height = 30  # Approximate height for initial calculation
         
         if self.number_position == 'top-left':
-            return (self.margin + safety_margin, self.margin + safety_margin)
+            x_pos = self.margin + safety_margin + self.number_x_offset
+            y_pos = self.margin + safety_margin + self.number_y_offset
+            return (x_pos, y_pos)
         elif self.number_position == 'top-right':
-            return (img_width - number_width - self.margin - safety_margin, self.margin + safety_margin)
+            # For right-aligned positions, use the RIGHT edge of the number as reference point
+            # This ensures all numbers align properly regardless of their width
+            x_pos = img_width - self.margin - safety_margin - number_width + self.number_x_offset
+            y_pos = self.margin + safety_margin + self.number_y_offset
+            return (x_pos, y_pos)
         elif self.number_position == 'bottom-left':
-            return (self.margin + safety_margin, img_height - number_height - self.margin - safety_margin)
+            x_pos = self.margin + safety_margin + self.number_x_offset
+            y_pos = img_height - number_height - self.margin - safety_margin + self.number_y_offset
+            return (x_pos, y_pos)
         elif self.number_position == 'center':
-            return ((img_width - number_width) // 2, (img_height - number_height) // 2)
+            x_pos = (img_width - number_width) // 2 + self.number_x_offset
+            y_pos = (img_height - number_height) // 2 + self.number_y_offset
+            return (x_pos, y_pos)
         else:  # bottom-right (default)
-            return (img_width - number_width - self.margin - safety_margin, img_height - number_height - self.margin - safety_margin)
+            # For right-aligned positions, use the RIGHT edge of the number as reference point
+            # This ensures all numbers align properly regardless of their width
+            x_pos = img_width - self.margin - safety_margin - number_width + self.number_x_offset
+            y_pos = img_height - number_height - self.margin - safety_margin + self.number_y_offset
+            return (x_pos, y_pos)
     
     def _calculate_custom_text_position(self, image: Image.Image, img_width: int, img_height: int, text_width: int, text_height: int) -> Tuple[int, int]:
         """Calculate custom text watermark position based on configuration."""
@@ -564,13 +588,16 @@ class WatermarkProcessor:
                 if number and self.enable_numbering:
                     number_watermark = self._create_number_watermark(number, watermarked)
                     
-                    # Calculate actual number watermark position
-                    num_width, num_height = number_watermark.size
-                    actual_number_x = watermarked.width - num_width - self.margin
-                    actual_number_y = watermarked.height - num_height - self.margin
+                    # Get the dimensions of the number watermark
+                    bbox = number_watermark.getbbox()
+                    number_width = bbox[2] - bbox[0]
+                    number_height = bbox[3] - bbox[1]
                     
-                    # Paste number watermark
-                    watermarked.paste(number_watermark, (actual_number_x, actual_number_y), number_watermark)
+                    # Calculate the position for the number watermark
+                    # The number_pos was calculated earlier and includes the number_x_offset and number_y_offset
+                    number_x, number_y = self._calculate_number_position(watermarked, watermarked.width, watermarked.height, number_width, number_height)
+                    
+                    watermarked.paste(number_watermark, (number_x, number_y), number_watermark)
                 
                 # Save watermarked image
                 # Ensure output directory exists
@@ -724,6 +751,10 @@ def main():
                        help='X offset for PNG watermark position (can be negative, default: 0)')
     parser.add_argument('--png-y-offset', type=int, default=0,
                        help='Y offset for PNG watermark position (can be negative, default: 0)')
+    parser.add_argument('--number-x-offset', type=int, default=0,
+                       help='X offset for number watermark position (can be negative, default: 0)')
+    parser.add_argument('--number-y-offset', type=int, default=0,
+                       help='Y offset for number watermark position (can be negative, default: 0)')
     parser.add_argument('--dry-run', action='store_true',
                        help='Show what would be processed without actually processing')
     
@@ -761,7 +792,9 @@ def main():
         custom_text_opacity=args.custom_text_opacity,
         png_position=args.png_position,
         png_x_offset=args.png_x_offset,
-        png_y_offset=args.png_y_offset
+        png_y_offset=args.png_y_offset,
+        number_x_offset=args.number_x_offset,
+        number_y_offset=args.number_y_offset
     )
     
     # Get list of image files

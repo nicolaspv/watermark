@@ -22,6 +22,8 @@ A powerful Python script for bulk watermarking images with custom PNG logos, cus
 - **Smart Positioning**: 6 configurable positions for custom text, 5 for numbers, PNG with flexible positioning
 - **🆕 PNG Watermark Support**: Full PNG watermark support with alpha transparency preservation and flexible positioning
 - **🆕 PNG Offset Control**: X and Y offset parameters for precise PNG watermark positioning (supports negative values)
+- **🆕 Number Offset Control**: X and Y offset parameters for precise number watermark positioning (supports negative values)
+- **🆕 Right-Alignment Fix**: Numbers with different widths now align perfectly on their right edge
 - **🆕 FINAL_V3 Configuration**: Pre-configured PNG watermark setup optimized for K1 printing workflows
 - **Batch Processing**: Process entire folders of images automatically with recursive scanning
 - **Quality Preservation**: Maintains exact original image quality with 100% JPEG quality, no optimization
@@ -136,6 +138,8 @@ py watermark_script.py --input-folder "path/to/input" --output-folder "path/to/o
 | `--png-position` | Position of PNG watermark | `center-bottom` | `top-left`, `top-right`, `bottom-left`, `bottom-right`, `center`, `center-bottom` |
 | `--png-x-offset` | X offset for PNG watermark position | `0` | Any integer (can be negative) |
 | `--png-y-offset` | Y offset for PNG watermark position | `0` | Any integer (can be negative) |
+| `--number-x-offset` | X offset for number watermark position | `0` | Any integer (can be negative) |
+| `--number-y-offset` | Y offset for number watermark position | `0` | Any integer (can be negative) |
 | `--dry-run` | Show what would be processed | False | (flag) |
 
 ## Examples
@@ -150,6 +154,12 @@ py watermark_script.py --input-folder "./photos" --output-folder "./watermarked"
 
 # PNG watermark with offset positioning
 py watermark_script.py --input-folder "./photos" --output-folder "./watermarked" --png-watermark "./logo.png" --png-x-offset "50" --png-y-offset "-20" --enable-numbering
+
+# Number watermark with offset positioning
+py watermark_script.py --input-folder "./photos" --output-folder "./watermarked" --png-watermark "./logo.png" --enable-numbering --number-x-offset "-50" --number-y-offset "-100"
+
+# Combined PNG and number offsets for precise positioning
+py watermark_script.py --input-folder "./photos" --output-folder "./watermarked" --png-watermark "./logo.png" --enable-numbering --png-x-offset "100" --png-y-offset "0" --number-x-offset "-50" --number-y-offset "-50"
 
 # Custom text watermark with numbering
 py watermark_script.py --input-folder "./photos" --output-folder "./watermarked" --custom-text "mypage.com" --enable-numbering
@@ -171,6 +181,12 @@ py watermark_script.py --input-folder "./photos" --output-folder "./watermarked"
 
 # Custom number styling
 py watermark_script.py --input-folder "./photos" --output-folder "./watermarked" --png-watermark "./logo.png" --enable-numbering --number-color "#FF0000" --shadow-color "#000000" --number-position "top-right"
+
+# Right-aligned numbers with perfect alignment (NEW!)
+py watermark_script.py --input-folder "./photos" --output-folder "./watermarked" --png-watermark "./logo.png" --enable-numbering --number-position "bottom-right" --number-x-offset "-20" --number-y-offset "-120"
+
+# Professional numbering with enhanced shadows and offsets
+py watermark_script.py --input-folder "./photos" --output-folder "./watermarked" --png-watermark "./logo.png" --enable-numbering --number-position "top-right" --number-x-offset "50" --number-y-offset "30" --shadow-offset 0 --shadow-blur 4 --number-opacity 0.4
 
 # Custom text with Google Font
 py watermark_script.py --input-folder "./photos" --output-folder "./watermarked" --custom-text "mypage.com" --google-font "Roboto" --custom-text-size-ratio 0.05 --enable-numbering
@@ -246,6 +262,8 @@ py watermark_script.py --input-folder "./photos" --output-folder "./watermarked"
 - **Pattern Examples**: `IMG_001.jpg` → "001", `photo_123_2024.png` → "123"
 - **Enhanced Safety**: Advanced positioning with automatic safety margins to prevent shadow cutting
 - **Canvas Optimization**: Intelligent canvas sizing that accounts for shadow blur and offset effects
+- **🆕 Offset Control**: X and Y offset parameters for precise positioning (supports negative values)
+- **🆕 Right-Alignment Fix**: Numbers with different widths now align perfectly on their right edge
 
 ### 🎨 **Advanced Features**
 - **Drop Shadows**: Configurable offset, blur, and colors for professional look
@@ -255,6 +273,8 @@ py watermark_script.py --input-folder "./photos" --output-folder "./watermarked"
 - **Quality Preservation**: 100% JPEG quality, no optimization, exact original quality
 - **Enhanced Safety Margins**: Advanced shadow positioning with automatic safety calculations to prevent cutting
 - **Canvas Optimization**: Intelligent canvas sizing that accounts for shadow blur and offset effects
+- **🆕 Number Offset Control**: X and Y offset parameters for precise number positioning
+- **🆕 Right-Alignment System**: Intelligent positioning that uses actual number width for perfect alignment
 
 ### 🛡️ **Shadow Cutting Prevention System**
 - **Automatic Safety Calculations**: Dynamic safety margins based on shadow settings
@@ -411,6 +431,12 @@ Extract specific number formats:
 # Professional numbering with enhanced shadows
 --shadow-offset 0 --shadow-blur 4 --number-opacity 0.35
 
+# 🆕 Right-aligned numbers with perfect alignment
+--number-position "bottom-right" --number-x-offset "-20" --number-y-offset "-120"
+
+# 🆕 Number offset positioning for precise placement
+--number-position "top-right" --number-x-offset "50" --number-y-offset "30"
+
 # Enhanced shadow opacity control (NEW!)
 --custom-text "hamacak1.com" --custom-text-shadow-opacity 0.4 --custom-text-shadow-blur 4
 
@@ -487,6 +513,21 @@ py watermark_script.py --input-folder "./photos" --output-folder "./perfect_bala
 
 # Enhanced number shadow opacity control
 py watermark_script.py --input-folder "./photos" --output-folder "./number_shadows" --custom-text "BRAND" --shadow-color "#FFFFFF" --shadow-opacity 0.6 --shadow-blur 3 --enable-numbering
+```
+
+#### **🆕 Number Offset & Right-Alignment Features** ✨
+```bash
+# Right-aligned numbers with perfect alignment (prevents width misalignment)
+py watermark_script.py --input-folder "./photos" --output-folder "./right_aligned" --png-watermark "./logo.png" --enable-numbering --number-position "bottom-right" --number-x-offset "-20" --number-y-offset "-120"
+
+# Number offset positioning for precise placement
+py watermark_script.py --input-folder "./photos" --output-folder "./number_offset" --png-watermark "./logo.png" --enable-numbering --number-position "top-right" --number-x-offset "50" --number-y-offset "30"
+
+# Combined PNG and number offsets for professional results
+py watermark_script.py --input-folder "./photos" --output-folder "./combined_offsets" --png-watermark "./logo.png" --enable-numbering --png-x-offset "100" --png-y-offset "0" --number-x-offset "-50" --number-y-offset "-50"
+
+# Professional numbering with enhanced shadows and offsets
+py watermark_script.py --input-folder "./photos" --output-folder "./professional_numbers" --png-watermark "./logo.png" --enable-numbering --number-position "bottom-right" --number-x-offset "-20" --number-y-offset "-120" --shadow-offset 0 --shadow-blur 8 --number-opacity 0.4
 ```
 
 #### **🆕 PNG Watermark Examples** ✨
@@ -691,6 +732,9 @@ We welcome contributions to improve the watermark script! Here's how you can hel
 - **🆕 PNG Offset Parameters**: X and Y offset control for precise positioning (supports negative values)
 - **🆕 PNG Alpha Handling**: Proper alpha channel preservation without black background issues
 - **🆕 PNG Flexible Sizing**: Configurable scaling ratios (30% width, 25% height by default)
+- **🆕 Number Offset Control**: X and Y offset parameters for precise number positioning (supports negative values)
+- **🆕 Right-Alignment Fix**: Numbers with different widths now align perfectly on their right edge
+- **🆕 Enhanced Number Positioning**: Intelligent positioning that uses actual number width for perfect alignment
 
 ### 📞 **Community Support**
 - **GitHub Issues**: For bug reports and feature requests

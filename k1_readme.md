@@ -20,6 +20,8 @@ py k1_multi_folder.py --base-input "k1_test_input" --base-output "k1_output" --c
 - **PNG Opacity**: 1.0 (full opacity)
 - **Number Watermarks**: Same as V2 (shadow offset: 0, blur: 8, opacity: 0.4)
 - **Offset Control**: X and Y offset parameters for precise positioning
+- **🆕 Number Offset Control**: X and Y offset parameters for precise number positioning (supports negative values)
+- **🆕 Right-Alignment Fix**: Numbers with different widths now align perfectly on their right edge
 
 ### **Tested Configuration (test_nico_watermarked_final_v2)**
 ```bash
@@ -95,6 +97,24 @@ py k1_multi_folder.py \
   --config "final_v3" \
   --png-x-offset "50" \
   --png-y-offset "-20"
+
+# 🆕 PNG watermark with number offset positioning
+py k1_multi_folder.py \
+  --base-input "k1_test_input" \
+  --base-output "k1_output" \
+  --config "final_v3" \
+  --number-x-offset "-50" \
+  --number-y-offset "-100"
+
+# 🆕 Combined PNG and number offsets for precise positioning
+py k1_multi_folder.py \
+  --base-input "k1_test_input" \
+  --base-output "k1_output" \
+  --config "final_v3" \
+  --png-x-offset "100" \
+  --png-y-offset "0" \
+  --number-x-offset "-50" \
+  --number-y-offset "-50"
 ```
 
 #### **3. Batch Processing with Different Configurations**
@@ -122,6 +142,8 @@ The `final_v2` and `final_v3` configurations are now easily editable directly in
 - **Alpha Transparency**: Full PNG alpha channel preservation
 - **Configurable Sizing**: 30% width, 25% height by default
 - **Quality**: High-quality LANCZOS resampling
+- **🆕 Number Offset Control**: X and Y offset parameters for precise number positioning (supports negative values)
+- **🆕 Right-Alignment Fix**: Numbers with different widths now align perfectly on their right edge
 
 ### **Enhanced Shadow Control** ✨
 - **Custom Text Shadow Opacity**: `--custom-text-shadow-opacity` (0.1-1.0) - Control shadow transparency independently
@@ -233,6 +255,37 @@ py k1_multi_folder.py --base-input "k1_test_input" --base-output "k1_output" --c
 
 # PNG watermark with custom opacity
 py k1_multi_folder.py --base-input "k1_test_input" --base-output "k1_output" --config "final_v3" --png-opacity 0.8
+
+# 🆕 Right-aligned numbers with perfect alignment (prevents width misalignment)
+py k1_multi_folder.py --base-input "k1_test_input" --base-output "k1_output" --config "final_v3" --number-position "bottom-right" --number-x-offset "-20" --number-y-offset "-120"
+
+# 🆕 Number offset positioning for precise placement
+py k1_multi_folder.py --base-input "k1_test_input" --base-output "k1_output" --config "final_v3" --number-position "top-right" --number-x-offset "50" --number-y-offset "30"
+```
+
+### **🆕 Number Offset & Right-Alignment Features** ✨
+
+#### **Right-Alignment Fix**
+- **Problem Solved**: Numbers with different widths (like `1111` vs `0000`) now align perfectly on their right edge
+- **Technical Solution**: Modified positioning logic to use actual number width and right edge as reference point
+- **Result**: All numbers align consistently regardless of their width, creating professional appearance
+
+#### **Number Offset Control**
+- **X Offset**: Horizontal positioning adjustment (positive = right, negative = left)
+- **Y Offset**: Vertical positioning adjustment (positive = down, negative = up)
+- **Precise Control**: Fine-tune number positions for perfect alignment with PNG watermarks
+- **Negative Values**: Support for negative offsets for precise positioning
+
+#### **Usage Examples**
+```bash
+# Right-aligned numbers with perfect alignment
+py k1_multi_folder.py --base-input "k1_test_input" --base-output "k1_output" --config "final_v3" --number-position "bottom-right" --number-x-offset "-20" --number-y-offset "-120"
+
+# Number offset positioning for precise placement
+py k1_multi_folder.py --base-input "k1_test_input" --base-output "k1_output" --config "final_v3" --number-position "top-right" --number-x-offset "50" --number-y-offset "30"
+
+# Combined PNG and number offsets for professional results
+py k1_multi_folder.py --base-input "k1_test_input" --base-output "k1_output" --config "final_v3" --png-x-offset "100" --png-y-offset "0" --number-x-offset "-50" --number-y-offset "-50"
 ```
 
 ### **Advanced Usage**
@@ -378,14 +431,16 @@ py k1_multi_folder.py --base-input "test_nico" --base-output "k1_output" --confi
 
 1. **Test Multi-Folder Script**: Verify it works with all test folders
 2. **🆕 Test PNG Watermark**: Verify FINAL_V3 configuration works correctly
-3. **Fine-Tune Configurations**: Adjust settings for optimal results
-4. **Performance Testing**: Test with larger image collections
-5. **Quality Validation**: Ensure no shadow cutting in any scenario
-6. **🆕 PNG Quality Validation**: Ensure PNG transparency and positioning
-7. **Documentation Update**: Record successful configurations
-8. **Production Deployment**: Use for actual K1 printing workflows
+3. **🆕 Test Number Offsets**: Verify number positioning and right-alignment work correctly
+4. **Fine-Tune Configurations**: Adjust settings for optimal results
+5. **Performance Testing**: Test with larger image collections
+6. **Quality Validation**: Ensure no shadow cutting in any scenario
+7. **🆕 PNG Quality Validation**: Ensure PNG transparency and positioning
+8. **🆕 Number Alignment Validation**: Ensure numbers align perfectly regardless of width
+9. **Documentation Update**: Record successful configurations
+10. **Production Deployment**: Use for actual K1 printing workflows
 
 ---
 
-*Last Updated: Based on test_nico_watermarked_final_v2 results + 🆕 PNG watermark features*
-*Status: ✅ Shadow cutting issue resolved, 🆕 PNG watermark support added, ready for multi-folder testing*
+*Last Updated: Based on test_nico_watermarked_final_v2 results + 🆕 PNG watermark features + 🆕 Number offset and right-alignment features*
+*Status: ✅ Shadow cutting issue resolved, 🆕 PNG watermark support added, 🆕 Number offset and right-alignment features implemented, ready for multi-folder testing*

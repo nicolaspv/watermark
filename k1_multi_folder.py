@@ -77,13 +77,15 @@ class K1MultiFolderProcessor:
                 "margin": "100",                         # Base margin (PNG will be exactly 100px from left and bottom edges)
                 "png_x_offset": "0",                     # X offset for fine-tuning PNG position (can be negative)
                 "png_y_offset": "250",                   # Y offset for fine-tuning PNG position (can be negative)
-                "google_font": "Rubik",
+                "google_font": "Rubik",                  # Number font
                 "shadow_offset": "0",                    # Number shadow offset
                 "shadow_blur": "4",                      # Number shadow blur 
                 "number_opacity": "0.4",                 # Number transparency
                 "number_color": "#ffffff",               # Number color (white)
                 "shadow_color": "#000000",               # Shadow color (black)
-                "shadow_opacity": "0.9"                  # Shadow opacity
+                "shadow_opacity": "0.9",                 # Shadow opacity
+                "number_x_offset": "76",                 # X offset for fine-tuning number position (can be negative)
+                "number_y_offset": "52"                  # Y offset for fine-tuning number position (can be negative)
             },
             "glow_effect": {
                 "custom_text": "K1-PRINT",
@@ -201,6 +203,10 @@ class K1MultiFolderProcessor:
                 cmd.extend(["--number-opacity", value])
             elif key == "number_color":
                 cmd.extend(["--number-color", value])
+            elif key == "number_x_offset":
+                cmd.extend(["--number-x-offset", value])
+            elif key == "number_y_offset":
+                cmd.extend(["--number-y-offset", value])
         
         return cmd
     
@@ -420,6 +426,10 @@ Examples:
                        help='PNG watermark X offset (can be negative, overrides config)')
     parser.add_argument('--png-y-offset', required=False,
                        help='PNG watermark Y offset (can be negative, overrides config)')
+    parser.add_argument('--number-x-offset', required=False,
+                       help='Number watermark X offset (can be negative, overrides config)')
+    parser.add_argument('--number-y-offset', required=False,
+                       help='Number watermark Y offset (can be negative, overrides config)')
     parser.add_argument('--parallel', type=int, default=1,
                        help='Number of parallel workers (default: 1)')
     parser.add_argument('--dry-run', action='store_true',
@@ -460,7 +470,7 @@ Examples:
         args.custom_text_size_ratio, args.margin, args.custom_text_shadow_offset,
         args.custom_text_shadow_blur, args.custom_text_shadow_color,
         args.custom_text_opacity, args.shadow_offset, args.shadow_blur, args.shadow_color, args.shadow_opacity, args.number_opacity, args.number_color,
-        args.png_x_offset, args.png_y_offset
+        args.png_x_offset, args.png_y_offset, args.number_x_offset, args.number_y_offset
     ]):
         custom_settings = {}
         
@@ -498,6 +508,10 @@ Examples:
             custom_settings["png_x_offset"] = args.png_x_offset
         if args.png_y_offset:
             custom_settings["png_y_offset"] = args.png_y_offset
+        if args.number_x_offset:
+            custom_settings["number_x_offset"] = args.number_x_offset
+        if args.number_y_offset:
+            custom_settings["number_y_offset"] = args.number_y_offset
     
     # Process folders
     start_time = time.time()
