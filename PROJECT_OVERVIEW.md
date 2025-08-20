@@ -1,7 +1,30 @@
-# Project Overview - Bulk Image Watermark Script
+# Project Overview: Bulk Image Watermark Script
 
-## 🎯 Project Summary
-A comprehensive Python-based solution for bulk watermarking images with dual watermarks: custom PNG logos and auto-generated numbers extracted from filenames.
+## 🎯 **Core Purpose**
+A powerful Python script for bulk watermarking images with **three watermark types**:
+1. **PNG Watermark** 🆕 - Company logos, brand watermarks with alpha transparency
+2. **Custom Text Watermark** - URLs, social media tags, company names
+3. **Auto-generated Number Watermark** - Extracted from filenames
+
+## 🚀 **Key Features**
+
+### **Watermark Types**
+- **PNG Watermark**: Full alpha transparency support, flexible positioning, configurable sizing
+- **Custom Text**: Any text (e.g., "mypage.com", "@mytaghere", company names)
+- **Number Watermark**: Automatically extracted from filenames using regex patterns
+
+### **Positioning System**
+- **PNG Watermark**: 6 positions (top-left, top-right, bottom-left, bottom-right, center, center-bottom)
+- **Custom Text**: 6 positions including `center-bottom`
+- **Number Watermark**: 5 positions (default: bottom-right)
+- **🆕 PNG Offset Control**: X and Y offset parameters for precise positioning (supports negative values)
+
+### **Quality & Performance**
+- **100% Quality Preservation**: No quality loss, maximum JPEG quality
+- **Alpha Transparency**: Full PNG alpha channel support
+- **High-Quality Scaling**: LANCZOS resampling for watermarks
+- **Batch Processing**: Handle entire folders automatically
+- **Memory Efficient**: Processes images one at a time
 
 ## 📁 File Structure
 ```
@@ -74,10 +97,13 @@ run_watermark.bat "C:\Photos" "C:\Watermarked" "C:\logo.png"
 ## 🎨 Watermark Specifications
 
 ### PNG Watermark
-- **Position**: Center-bottom
-- **Scaling**: Proportional, max 20% of image width
-- **Transparency**: Configurable (0.1-1.0, default: 0.7)
+- **Position**: 6 configurable positions (top-left, top-right, bottom-left, bottom-right, center, center-bottom)
+- **Scaling**: Proportional, max 30% of image width, 25% of image height (configurable)
+- **Transparency**: Full alpha channel preservation with configurable opacity (0.1-1.0, default: 1.0)
 - **Quality**: High-quality LANCZOS resampling
+- **🆕 Offset Control**: X and Y offset parameters for precise positioning (supports negative values)
+- **🆕 Alpha Handling**: Proper alpha channel preservation without black background issues
+- **🆕 Flexible Sizing**: Configurable scaling ratios based on image dimensions
 
 ### Number Watermark
 - **Position**: Configurable (top-left, top-right, bottom-left, bottom-right, center)
@@ -103,6 +129,9 @@ run_watermark.bat "C:\Photos" "C:\Watermarked" "C:\logo.png"
 
 ### Optional Parameters
 - `--png-opacity`: PNG transparency (0.1-1.0)
+- `--png-position`: PNG watermark position (6 positions available)
+- `--png-x-offset`: PNG X offset for precise positioning (can be negative)
+- `--png-y-offset`: PNG Y offset for precise positioning (can be negative)
 - `--number-opacity`: Number transparency (0.1-1.0)
 - `--font-size-ratio`: Font size ratio (0.01-0.1)
 - `--margin`: Edge margin in pixels (10-100)
@@ -252,6 +281,21 @@ py watermark_script.py --input-folder "./photos" --output-folder "./output" --pn
 
 # Professional custom text
 --custom-text "mypage.com" --google-font "Roboto" --custom-text-size-ratio 0.05
+```
+
+### 🆕 PNG Watermark Examples
+```bash
+# PNG watermark with bottom-left positioning
+--png-watermark "./logo.png" --png-position "bottom-left" --enable-numbering
+
+# PNG watermark with custom offset positioning
+--png-watermark "./logo.png" --png-position "bottom-left" --png-x-offset "100" --png-y-offset "0" --enable-numbering
+
+# PNG watermark with negative offset for precise positioning
+--png-watermark "./logo.png" --png-position "top-right" --png-x-offset "-30" --png-y-offset "50" --enable-numbering
+
+# PNG watermark with custom opacity
+--png-watermark "./logo.png" --png-opacity 0.8 --enable-numbering
 ```
 
 ### Batch Processing Multiple Folders

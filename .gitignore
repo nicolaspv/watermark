@@ -92,6 +92,7 @@ sample_images/
 !sample_watermark.png
 !test_images/*.jpg
 !test_images/*.png
+!k1_watermark.png
 
 # Environment variables
 .env

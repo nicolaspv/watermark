@@ -19,7 +19,10 @@ A powerful Python script for bulk watermarking images with custom PNG logos, cus
 ## Features
 
 - **Triple Watermark System**: Custom PNG watermark + Custom text watermark + Auto-generated number watermark
-- **Smart Positioning**: 6 configurable positions for custom text, 5 for numbers, PNG centered at bottom
+- **Smart Positioning**: 6 configurable positions for custom text, 5 for numbers, PNG with flexible positioning
+- **🆕 PNG Watermark Support**: Full PNG watermark support with alpha transparency preservation and flexible positioning
+- **🆕 PNG Offset Control**: X and Y offset parameters for precise PNG watermark positioning (supports negative values)
+- **🆕 FINAL_V3 Configuration**: Pre-configured PNG watermark setup optimized for K1 printing workflows
 - **Batch Processing**: Process entire folders of images automatically with recursive scanning
 - **Quality Preservation**: Maintains exact original image quality with 100% JPEG quality, no optimization
 - **Flexible Configuration**: Customizable opacity, margins, font sizes, colors, and shadow effects
@@ -130,6 +133,9 @@ py watermark_script.py --input-folder "path/to/input" --output-folder "path/to/o
 | `--custom-text-shadow-opacity` | Custom text shadow transparency | `0.8` | 0.1-1.0 |
 | `--custom-text-size-ratio` | Custom text font size ratio | `0.04` | 0.01-0.1 |
 | `--custom-text-opacity` | Custom text transparency | `0.8` | 0.1-1.0 |
+| `--png-position` | Position of PNG watermark | `center-bottom` | `top-left`, `top-right`, `bottom-left`, `bottom-right`, `center`, `center-bottom` |
+| `--png-x-offset` | X offset for PNG watermark position | `0` | Any integer (can be negative) |
+| `--png-y-offset` | Y offset for PNG watermark position | `0` | Any integer (can be negative) |
 | `--dry-run` | Show what would be processed | False | (flag) |
 
 ## Examples
@@ -138,6 +144,12 @@ py watermark_script.py --input-folder "path/to/input" --output-folder "path/to/o
 ```bash
 # PNG watermark with numbering
 py watermark_script.py --input-folder "./photos" --output-folder "./watermarked" --png-watermark "./logo.png" --enable-numbering
+
+# PNG watermark with custom positioning
+py watermark_script.py --input-folder "./photos" --output-folder "./watermarked" --png-watermark "./logo.png" --png-position "bottom-left" --enable-numbering
+
+# PNG watermark with offset positioning
+py watermark_script.py --input-folder "./photos" --output-folder "./watermarked" --png-watermark "./logo.png" --png-x-offset "50" --png-y-offset "-20" --enable-numbering
 
 # Custom text watermark with numbering
 py watermark_script.py --input-folder "./photos" --output-folder "./watermarked" --custom-text "mypage.com" --enable-numbering
@@ -150,6 +162,12 @@ py watermark_script.py --input-folder "./photos" --output-folder "./watermarked"
 ```bash
 # Adjust PNG opacity and margins
 py watermark_script.py --input-folder "./photos" --output-folder "./watermarked" --png-watermark "./logo.png" --enable-numbering --png-opacity 0.5 --margin 30
+
+# PNG watermark with custom positioning and offset
+py watermark_script.py --input-folder "./photos" --output-folder "./watermarked" --png-watermark "./logo.png" --png-position "bottom-left" --png-x-offset "100" --png-y-offset "0" --enable-numbering
+
+# PNG watermark with negative offset for precise positioning
+py watermark_script.py --input-folder "./photos" --output-folder "./watermarked" --png-watermark "./logo.png" --png-position "top-right" --png-x-offset "-30" --png-y-offset "50" --enable-numbering
 
 # Custom number styling
 py watermark_script.py --input-folder "./photos" --output-folder "./watermarked" --png-watermark "./logo.png" --enable-numbering --number-color "#FF0000" --shadow-color "#000000" --number-position "top-right"
@@ -207,6 +225,17 @@ py watermark_script.py --input-folder "./photos" --output-folder "./watermarked"
 - **Use Cases**: Branding, URLs, social media tags, copyright notices
 - **Enhanced Safety**: Advanced positioning with automatic safety margins to prevent shadow cutting
 - **Canvas Optimization**: Intelligent canvas sizing that accounts for shadow blur and offset effects
+
+### 🖼️ **PNG Watermark** 🆕
+- **Position**: 6 configurable positions including `bottom-left`, `top-right`, `center`, etc.
+- **Scaling**: Automatically resized to max 30% of image width, 25% of height (configurable)
+- **Transparency**: Full alpha channel preservation with configurable opacity (0.1-1.0, default: 1.0)
+- **Quality**: High-quality LANCZOS resampling for smooth scaling
+- **Format Support**: PNG with alpha channel for transparency
+- **Offset Control**: X and Y offset parameters for precise positioning (supports negative values)
+- **Use Cases**: Company logos, brand watermarks, professional signatures
+- **Alpha Handling**: Proper alpha channel preservation without black background issues
+- **Flexible Sizing**: Proportional scaling based on image dimensions with configurable ratios
 
 ### 🔢 **Number Watermark**
 - **Position**: 5 configurable positions (default: bottom-right)
@@ -416,6 +445,9 @@ foreach ($folder in $folders) {
 # Company logo with custom text
 py watermark_script.py --input-folder "./product_photos" --output-folder "./branded" --png-watermark "./company_logo.png" --custom-text "mypage.com" --enable-numbering
 
+# PNG logo watermark with custom positioning
+py watermark_script.py --input-folder "./product_photos" --output-folder "./branded" --png-watermark "./company_logo.png" --png-position "bottom-left" --png-x-offset "100" --png-y-offset "0" --enable-numbering
+
 # Social media style
 py watermark_script.py --input-folder "./social_media" --output-folder "./tagged" --custom-text "@mytaghere" --custom-text-color "#FF0000" --custom-text-position "top-right" --enable-numbering
 ```
@@ -455,6 +487,24 @@ py watermark_script.py --input-folder "./photos" --output-folder "./perfect_bala
 
 # Enhanced number shadow opacity control
 py watermark_script.py --input-folder "./photos" --output-folder "./number_shadows" --custom-text "BRAND" --shadow-color "#FFFFFF" --shadow-opacity 0.6 --shadow-blur 3 --enable-numbering
+```
+
+#### **🆕 PNG Watermark Examples** ✨
+```bash
+# PNG watermark with bottom-left positioning
+py watermark_script.py --input-folder "./photos" --output-folder "./png_bottom_left" --png-watermark "./logo.png" --png-position "bottom-left" --png-x-offset "100" --png-y-offset "0" --enable-numbering
+
+# PNG watermark with top-right positioning and offset
+py watermark_script.py --input-folder "./photos" --output-folder "./png_top_right" --png-watermark "./logo.png" --png-position "top-right" --png-x-offset "-30" --png-y-offset "50" --enable-numbering
+
+# PNG watermark with center positioning and custom opacity
+py watermark_script.py --input-folder "./photos" --output-folder "./png_center" --png-watermark "./logo.png" --png-position "center" --png-opacity 0.8 --enable-numbering
+
+# PNG watermark with negative offset for precise positioning
+py watermark_script.py --input-folder "./photos" --output-folder "./png_precise" --png-watermark "./logo.png" --png-position "bottom-left" --png-x-offset "100" --png-y-offset "-50" --enable-numbering
+
+# Professional logo watermark with numbering
+py watermark_script.py --input-folder "./photos" --output-folder "./professional_logo" --png-watermark "./company_logo.png" --png-position "bottom-left" --png-x-offset "100" --png-y-offset "0" --shadow-offset 0 --shadow-blur 8 --number-opacity 0.4 --enable-numbering
 ```
 
 #### **Enhanced Shadow Opacity Control** ✨ (NEW!)
@@ -636,6 +686,11 @@ We welcome contributions to improve the watermark script! Here's how you can hel
 - **Professional Effects**: Glow effects, large shadows, and enhanced positioning
 - **Enhanced Shadow Opacity Control**: Independent shadow transparency for custom text and number watermarks
 - **Professional Shadow Effects**: Enhanced blur rendering with proper color and opacity handling
+- **🆕 PNG Watermark Support**: Full PNG watermark support with alpha transparency preservation
+- **🆕 PNG Positioning Control**: 6 configurable positions including bottom-left, top-right, center, etc.
+- **🆕 PNG Offset Parameters**: X and Y offset control for precise positioning (supports negative values)
+- **🆕 PNG Alpha Handling**: Proper alpha channel preservation without black background issues
+- **🆕 PNG Flexible Sizing**: Configurable scaling ratios (30% width, 25% height by default)
 
 ### 📞 **Community Support**
 - **GitHub Issues**: For bug reports and feature requests

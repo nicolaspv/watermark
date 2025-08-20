@@ -1,68 +1,71 @@
-# K1 Quick Reference Card
+# K1 Quick Reference - Watermark Scripts
 
-## 🚀 **Quick Start Commands**
+## 🚀 **Quick Commands**
 
-### **Basic Usage**
+### **FINAL_V2 Configuration (Text Watermark)**
 ```bash
-# Process with tested final_v2 configuration (processes all subfolders in k1_test_input)
 py k1_multi_folder.py --base-input "k1_test_input" --base-output "k1_output" --config "final_v2"
-
-# List all available configurations
-py k1_multi_folder.py --list-configs
-
-# Dry run to preview processing
-py k1_multi_folder.py --base-input "k1_test_input" --base-output "k1_output" --config "final_v2" --dry-run
 ```
+**Features:**
+- Custom text: "hamacak1.com"
+- Google Font: Rubik
+- Position: center-bottom
+- Text size: 5% of image height
+- Margin: 120px
+- Shadow offset: 8px, blur: 4px
+- Number watermarks: shadow offset: 0, blur: 8, opacity: 0.4
 
-### **Pre-Configured Settings**
-
-#### **final_v2** ✅ (Tested & Confirmed)
+### **🆕 FINAL_V3 Configuration (PNG Watermark)** ✨
 ```bash
---custom-text "hamacak1.com"
---google-font "Rubik"
---custom-text-position "center-bottom"
---custom-text-size-ratio 0.05
---margin 120
---custom-text-shadow-offset 15
---custom-text-shadow-blur 8
---custom-text-opacity 0.6
---shadow-offset 0
---shadow-blur 6
---number-opacity 0.4
+py k1_multi_folder.py --base-input "k1_test_input" --base-output "k1_output" --config "final_v3"
 ```
+**Features:**
+- PNG watermark: `k1_watermark.png`
+- Position: bottom-left
+- Left margin: 100px from left edge
+- Bottom margin: 100px from bottom edge
+- PNG opacity: 1.0 (full opacity)
+- PNG size: 30% of image width, 25% of image height
+- Number watermarks: Same as V2 (shadow offset: 0, blur: 8, opacity: 0.4)
 
-#### **glow_effect** (Professional Glow)
+### **Custom PNG Watermark with Offset** 🎯
 ```bash
---custom-text "K1-PRINT"
---google-font "Rubik"
---custom-text-position "center-bottom"
---custom-text-size-ratio 0.06
---margin 150
---custom-text-shadow-offset 0
---custom-text-shadow-blur 8
---custom-text-shadow-color "#FFFFFF"
---custom-text-opacity 0.8
---shadow-offset 0
---shadow-blur 4
---number-opacity 0.3
+py k1_multi_folder.py --base-input "k1_test_input" --base-output "k1_output" --config "final_v3" --png-x-offset "50" --png-y-offset "-20"
 ```
-
-#### **dramatic_shadow** (Large Shadow Effects)
-```bash
---custom-text "K1-PRINT"
---google-font "Rubik"
---custom-text-position "center-bottom"
---custom-text-size-ratio 0.05
---margin 200
---custom-text-shadow-offset 25
---custom-text-shadow-blur 12
---custom-text-opacity 0.5
---shadow-offset 0
---shadow-blur 8
---number-opacity 0.25
-```
+**Features:**
+- Uses FINAL_V3 base configuration
+- X offset: 50px to the right
+- Y offset: 20px up from bottom edge
+- Perfect for fine-tuning PNG position
 
 ## ⚙️ **Advanced Features**
+
+### **🆕 PNG Watermark System** ✨
+- **6 Position Options**: top-left, top-right, bottom-left, bottom-right, center, center-bottom
+- **Offset Control**: X and Y offset parameters for precise positioning
+- **Negative Values**: Support for negative offsets (e.g., `--png-y-offset "-50"`)
+- **Alpha Transparency**: Full PNG alpha channel preservation
+- **Configurable Sizing**: 30% width, 25% height by default
+- **Quality**: High-quality LANCZOS resampling
+
+### **PNG Offset Examples**
+```bash
+# Move PNG 50px right, 20px up
+--png-x-offset "50" --png-y-offset "-20"
+
+# Move PNG 100px left, 30px down  
+--png-x-offset "-100" --png-y-offset "30"
+
+# Precise bottom-left positioning
+--png-position "bottom-left" --png-x-offset "100" --png-y-offset "0"
+```
+
+### **Text Watermark System**
+- **6 Position Options**: Including center-bottom for traditional placement
+- **Google Fonts**: Automatic download and caching
+- **Custom Fonts**: Support for .ttf and .otf files
+- **Full Styling**: Colors, shadows, fonts, and sizing
+- **Enhanced Shadows**: Large offset and blur support
 
 ### **Custom Configuration**
 ```bash

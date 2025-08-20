@@ -65,6 +65,26 @@ class K1MultiFolderProcessor:
                 "shadow_blur": "8",                      # Number shadow blur
                 "number_opacity": "0.4"                  # Number transparency
             },
+            # ========================================
+            # 🎨 FINAL_V3 CONFIGURATION - PNG WATERMARK
+            # ========================================
+            # This configuration uses PNG watermark instead of custom text
+            # PNG watermark is positioned at bottom-left, numbers remain as V2
+            "final_v3": {
+                "png_watermark": "k1_watermark.png",     # PNG watermark file path
+                "png_position": "bottom-left",           # PNG watermark position
+                "png_opacity": "1.0",                    # PNG watermark transparency (0.1-1.0)
+                "margin": "100",                         # Base margin (PNG will be exactly 100px from left and bottom edges)
+                "png_x_offset": "0",                     # X offset for fine-tuning PNG position (can be negative)
+                "png_y_offset": "250",                   # Y offset for fine-tuning PNG position (can be negative)
+                "google_font": "Rubik",
+                "shadow_offset": "0",                    # Number shadow offset
+                "shadow_blur": "4",                      # Number shadow blur 
+                "number_opacity": "0.4",                 # Number transparency
+                "number_color": "#ffffff",               # Number color (white)
+                "shadow_color": "#000000",               # Shadow color (black)
+                "shadow_opacity": "0.9"                  # Shadow opacity
+            },
             "glow_effect": {
                 "custom_text": "K1-PRINT",
                 "google_font": "Rubik",
@@ -145,6 +165,16 @@ class K1MultiFolderProcessor:
                 cmd.extend(["--custom-text", value])
             elif key == "google_font":
                 cmd.extend(["--google-font", value])
+            elif key == "png_watermark":
+                cmd.extend(["--png-watermark", value])
+            elif key == "png_opacity":
+                cmd.extend(["--png-opacity", value])
+            elif key == "png_position":
+                cmd.extend(["--png-position", value])
+            elif key == "png_x_offset":
+                cmd.extend(["--png-x-offset", value])
+            elif key == "png_y_offset":
+                cmd.extend(["--png-y-offset", value])
             elif key == "custom_text_position":
                 cmd.extend(["--custom-text-position", value])
             elif key == "custom_text_size_ratio":
@@ -163,8 +193,14 @@ class K1MultiFolderProcessor:
                 cmd.extend(["--shadow-offset", value])
             elif key == "shadow_blur":
                 cmd.extend(["--shadow-blur", value])
+            elif key == "shadow_color":
+                cmd.extend(["--shadow-color", value])
+            elif key == "shadow_opacity":
+                cmd.extend(["--shadow-opacity", value])
             elif key == "number_opacity":
                 cmd.extend(["--number-opacity", value])
+            elif key == "number_color":
+                cmd.extend(["--number-color", value])
         
         return cmd
     
@@ -372,8 +408,18 @@ Examples:
                        help='Number shadow offset (overrides config)')
     parser.add_argument('--shadow-blur', required=False,
                        help='Number shadow blur (overrides config)')
+    parser.add_argument('--shadow-color', required=False,
+                       help='Number shadow color (overrides config)')
+    parser.add_argument('--shadow-opacity', required=False,
+                       help='Number shadow opacity (overrides config)')
     parser.add_argument('--number-opacity', required=False,
                        help='Number opacity (overrides config)')
+    parser.add_argument('--number-color', required=False,
+                       help='Number color (overrides config)')
+    parser.add_argument('--png-x-offset', required=False,
+                       help='PNG watermark X offset (can be negative, overrides config)')
+    parser.add_argument('--png-y-offset', required=False,
+                       help='PNG watermark Y offset (can be negative, overrides config)')
     parser.add_argument('--parallel', type=int, default=1,
                        help='Number of parallel workers (default: 1)')
     parser.add_argument('--dry-run', action='store_true',
@@ -413,7 +459,8 @@ Examples:
         args.custom_text, args.google_font, args.custom_text_position,
         args.custom_text_size_ratio, args.margin, args.custom_text_shadow_offset,
         args.custom_text_shadow_blur, args.custom_text_shadow_color,
-        args.custom_text_opacity, args.shadow_offset, args.shadow_blur, args.number_opacity
+        args.custom_text_opacity, args.shadow_offset, args.shadow_blur, args.shadow_color, args.shadow_opacity, args.number_opacity, args.number_color,
+        args.png_x_offset, args.png_y_offset
     ]):
         custom_settings = {}
         
@@ -439,8 +486,18 @@ Examples:
             custom_settings["shadow_offset"] = args.shadow_offset
         if args.shadow_blur:
             custom_settings["shadow_blur"] = args.shadow_blur
+        if args.shadow_color:
+            custom_settings["shadow_color"] = args.shadow_color
+        if args.shadow_opacity:
+            custom_settings["shadow_opacity"] = args.shadow_opacity
         if args.number_opacity:
             custom_settings["number_opacity"] = args.number_opacity
+        if args.number_color:
+            custom_settings["number_color"] = args.number_color
+        if args.png_x_offset:
+            custom_settings["png_x_offset"] = args.png_x_offset
+        if args.png_y_offset:
+            custom_settings["png_y_offset"] = args.png_y_offset
     
     # Process folders
     start_time = time.time()

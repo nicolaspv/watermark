@@ -39,7 +39,8 @@ class WatermarkProcessor:
                  custom_text: str = None, custom_text_position: str = 'center-bottom',
                  custom_text_color: str = '#000000', custom_text_shadow_color: str = '#FFFFFF',
                  custom_text_shadow_offset: int = 3, custom_text_shadow_blur: int = 1,
-                 custom_text_shadow_opacity: float = 0.8, custom_text_size_ratio: float = 0.04, custom_text_opacity: float = 0.8):
+                 custom_text_shadow_opacity: float = 0.8, custom_text_size_ratio: float = 0.04, custom_text_opacity: float = 0.8,
+                 png_position: str = 'center-bottom', png_x_offset: int = 0, png_y_offset: int = 0):
         """
         Initialize watermark processor.
         
@@ -67,6 +68,7 @@ class WatermarkProcessor:
             custom_text_shadow_opacity: Custom text shadow transparency (0.1-1.0)
             custom_text_size_ratio: Custom text font size as ratio of image height
             custom_text_opacity: Custom text transparency (0.1-1.0)
+            png_position: Position of PNG watermark ('top-left', 'top-right', 'bottom-left', 'bottom-right', 'center', 'center-bottom')
         """
         self.png_watermark_path = png_watermark_path
         self.enable_numbering = enable_numbering
@@ -91,6 +93,9 @@ class WatermarkProcessor:
         self.custom_text_shadow_opacity = max(0.1, min(1.0, custom_text_shadow_opacity))
         self.custom_text_size_ratio = custom_text_size_ratio
         self.custom_text_opacity = max(0.1, min(1.0, custom_text_opacity))
+        self.png_position = png_position
+        self.png_x_offset = png_x_offset
+        self.png_y_offset = png_y_offset
         
         # Load PNG watermark (if provided)
         self.png_watermark = self._load_png_watermark() if png_watermark_path else None
@@ -209,8 +214,7 @@ class WatermarkProcessor:
         # PNG watermark position (center-bottom) or custom text position
         if self.png_watermark:
             png_width, png_height = self.png_watermark.size
-            png_x = (img_width - png_width) // 2
-            png_y = img_height - png_height - self.margin
+            png_x, png_y = self._calculate_png_position(image, img_width, img_height, png_width, png_height)
         elif self.custom_text:
             # Create temporary text watermark to get dimensions
             temp_text_watermark = self._create_custom_text_watermark(self.custom_text, image)
@@ -271,13 +275,46 @@ class WatermarkProcessor:
         else:  # center-bottom (default)
             return ((img_width - text_width) // 2, img_height - text_height - self.margin - safety_margin)
     
+    def _calculate_png_position(self, image: Image.Image, img_width: int, img_height: int, png_width: int, png_height: int) -> Tuple[int, int]:
+        """Calculate PNG watermark position based on configuration."""
+        if self.png_position == 'top-left':
+            x_pos = self.margin + self.png_x_offset
+            y_pos = self.margin + self.png_y_offset
+            return (x_pos, y_pos)
+        elif self.png_position == 'top-right':
+            x_pos = img_width - png_width - self.margin + self.png_x_offset
+            y_pos = self.margin + self.png_y_offset
+            return (x_pos, y_pos)
+        elif self.png_position == 'bottom-left':
+            # For bottom-left, place exactly at bottom edge with offset support
+            x_pos = self.margin + self.png_x_offset
+            # Calculate Y position to place watermark exactly at bottom edge
+            # img_height - png_height gives us the top edge of the watermark
+            # We want it to sit exactly at the bottom, so no additional margin
+            y_pos = img_height - png_height + self.png_y_offset
+            return (x_pos, y_pos)
+        elif self.png_position == 'center':
+            x_pos = (img_width - png_width) // 2 + self.png_x_offset
+            y_pos = (img_height - png_height) // 2 + self.png_y_offset
+            return (x_pos, y_pos)
+        elif self.png_position == 'center-bottom':
+            # For center-bottom, use the margin value for bottom
+            x_pos = (img_width - png_width) // 2 + self.png_x_offset
+            y_pos = img_height - png_height - self.margin + self.png_y_offset
+            return (x_pos, y_pos)
+        else:  # center-bottom (default)
+            # For center-bottom, use the margin value for bottom
+            x_pos = (img_width - png_width) // 2 + self.png_x_offset
+            y_pos = img_height - png_height - self.margin + self.png_y_offset
+            return (x_pos, y_pos)
+    
     def _resize_png_watermark(self, image: Image.Image) -> Image.Image:
         """Resize PNG watermark proportionally based on image size."""
         img_width, img_height = image.size
         
-        # Calculate target size (max 20% of image width)
-        max_width = int(img_width * 0.2)
-        max_height = int(img_height * 0.15)
+        # Calculate target size (increased from 20% to 30% of image width for bigger watermark)
+        max_width = int(img_width * 0.3)  # Increased from 0.2 to 0.3
+        max_height = int(img_height * 0.25)  # Increased from 0.15 to 0.25
         
         # Get current watermark dimensions
         wm_width, wm_height = self.png_watermark.size
@@ -501,9 +538,18 @@ class WatermarkProcessor:
                 if self.png_watermark:
                     resized_png = self._resize_png_watermark(watermarked)
                     
-                    # Create a copy of PNG watermark with adjusted opacity
+                    # Create a copy of PNG watermark with proper alpha handling
+                    # Instead of overwriting alpha with putalpha(), we'll blend the alpha properly
                     png_with_opacity = resized_png.copy()
-                    png_with_opacity.putalpha(int(255 * self.png_opacity))
+                    
+                    # Get the original alpha channel
+                    original_alpha = png_with_opacity.split()[-1]  # Get alpha channel
+                    
+                    # Apply opacity to the alpha channel while preserving transparency
+                    if self.png_opacity != 1.0:
+                        # Create new alpha channel with adjusted opacity
+                        new_alpha = original_alpha.point(lambda x: int(x * self.png_opacity))
+                        png_with_opacity.putalpha(new_alpha)
                     
                     # Paste PNG watermark
                     watermarked.paste(png_with_opacity, png_pos, png_with_opacity)
@@ -672,6 +718,12 @@ def main():
                        help='Custom text font size as ratio of image height (default: 0.04)')
     parser.add_argument('--custom-text-opacity', type=float, default=0.8,
                        help='Custom text transparency (0.1-1.0, default: 0.8)')
+    parser.add_argument('--png-position', choices=['top-left', 'top-right', 'bottom-left', 'bottom-right', 'center', 'center-bottom'],
+                       default='center-bottom', help='Position of PNG watermark (default: center-bottom)')
+    parser.add_argument('--png-x-offset', type=int, default=0,
+                       help='X offset for PNG watermark position (can be negative, default: 0)')
+    parser.add_argument('--png-y-offset', type=int, default=0,
+                       help='Y offset for PNG watermark position (can be negative, default: 0)')
     parser.add_argument('--dry-run', action='store_true',
                        help='Show what would be processed without actually processing')
     
@@ -706,7 +758,10 @@ def main():
         custom_text_shadow_blur=args.custom_text_shadow_blur,
         custom_text_shadow_opacity=args.custom_text_shadow_opacity,
         custom_text_size_ratio=args.custom_text_size_ratio,
-        custom_text_opacity=args.custom_text_opacity
+        custom_text_opacity=args.custom_text_opacity,
+        png_position=args.png_position,
+        png_x_offset=args.png_x_offset,
+        png_y_offset=args.png_y_offset
     )
     
     # Get list of image files

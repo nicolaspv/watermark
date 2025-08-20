@@ -1,92 +1,84 @@
-# 🚀 Watermark Script Enhancements Summary
+# Enhancements Summary - Bulk Image Watermark Script
 
-## ✨ New Features Added
+## 🆕 **Latest Features (v3.0+)**
 
-### 🎯 **Configurable Number Watermark Positioning**
-- **5 Position Options**: `top-left`, `top-right`, `bottom-left`, `bottom-right`, `center`
-- **Smart Calculation**: Automatically adjusts positioning based on image dimensions
-- **Margin Respect**: Maintains proper spacing from edges
+### **PNG Watermark System** ✨
+- **Full PNG Support**: Complete PNG watermark integration with alpha transparency preservation
+- **Flexible Positioning**: 6 configurable positions (top-left, top-right, bottom-left, bottom-right, center, center-bottom)
+- **Offset Control**: X and Y offset parameters for precise positioning (supports negative values)
+- **Alpha Handling**: Proper alpha channel preservation without black background issues
+- **Configurable Sizing**: Flexible scaling ratios (30% width, 25% height by default)
+- **Quality Preservation**: High-quality LANCZOS resampling for smooth scaling
 
-### 🎨 **Customizable Colors & Styling**
-- **Text Colors**: Hex codes (`#FF0000`) or color names (`red`, `blue`, `green`)
-- **Shadow Colors**: Independent control over drop shadow appearance
-- **Color Support**: 12+ predefined colors + unlimited hex color options
+### **FINAL_V3 Configuration** 🎯
+- **Pre-configured Setup**: Optimized PNG watermark configuration for K1 printing workflows
+- **PNG Watermark**: Uses `k1_watermark.png` file
+- **Position**: Bottom-left with exact 100px margins from left and bottom edges
+- **Number Watermarks**: Same configuration as V2 (shadow offset: 0, shadow blur: 8, opacity: 0.4)
+- **Easy Integration**: Works seamlessly with `k1_multi_folder.py` script
 
-### 🌟 **Enhanced Drop Shadow Effects**
-- **Configurable Offset**: 0-20 pixels (default: 3)
-- **Adjustable Blur**: 0-5 radius (default: 1)
-- **Professional Look**: Smooth, anti-aliased shadow effects
+### **Enhanced Positioning Control** 🎨
+- **PNG X Offset**: Horizontal positioning adjustment (`--png-x-offset`)
+- **PNG Y Offset**: Vertical positioning adjustment (`--png-y-offset`)
+- **Negative Values**: Support for negative offsets for precise positioning
+- **Real-time Adjustment**: Fine-tune watermark position without editing configuration files
 
-### 🔤 **Advanced Font Support**
-- **Google Fonts**: Automatic download and caching
-- **Custom Fonts**: Support for `.ttf` and `.otf` files
-- **System Fallback**: Graceful degradation to system fonts
-- **Font Priority**: Custom → Google → System → Default
+## 🚀 **Previous Major Features (v2.0+)**
 
-### 📝 **Custom Text Watermarks**
-- **Text Input**: Any custom text (e.g., "mypage.com", "@mytaghere")
-- **6 Position Options**: Including `center-bottom` for traditional placement
-- **Full Styling**: Colors, shadows, fonts, and sizing
-- **PNG Alternative**: Can replace PNG watermarks entirely
+### **Enhanced Shadow Effects**
+- **Large Shadow Support**: Shadow offsets up to 20px, blur effects up to 5px
+- **Professional Glow Effects**: Create stunning glow effects with zero offset and high blur
+- **Shadow Cutting Prevention**: Automatic safety margins prevent any watermark cutting
+- **Enhanced Canvas Management**: Intelligent sizing with 80px padding
 
-### 🎛️ **Extended Command-Line Options**
+### **Advanced Shadow Opacity Control**
+- **Independent Shadow Opacity**: Separate control for custom text and number watermark shadows
+- **Custom Text Shadow Opacity**: `--custom-text-shadow-opacity` (0.1-1.0)
+- **Number Watermark Shadow Opacity**: `--shadow-opacity` (0.1-1.0)
+- **Professional Results**: Fine-tune shadow effects for perfect visual balance
 
-#### New Required Arguments
-None (all new options are optional)
-
-#### New Optional Arguments
-| Option | Description | Default | Range |
-|--------|-------------|---------|-------|
-| `--number-position` | Number watermark position | `bottom-right` | 5 positions |
-| `--number-color` | Number text color | `#000000` | Hex/names |
-| `--shadow-color` | Drop shadow color | `#FFFFFF` | Hex/names |
-| `--shadow-offset` | Shadow offset in pixels | `3` | 0-20 |
-| `--shadow-blur` | Shadow blur radius | `1` | 0-5 |
-| `--shadow-opacity` | Number watermark shadow transparency | `0.8` | 0.1-1.0 |
-| `--custom-font` | Custom font file path | None | `.ttf`, `.otf` |
-| `--google-font` | Google Font name | None | Any Google Font |
-| `--custom-text` | Custom text watermark | None | Any text |
-| `--custom-text-position` | Custom text position | `center-bottom` | 6 positions |
-| `--custom-text-color` | Custom text color | `#000000` | Hex/names |
-| `--custom-text-shadow-color` | Custom text shadow color | `#FFFFFF` | Hex/names |
-| `--custom-text-shadow-offset` | Custom text shadow offset | `3` | 0-20 |
-| `--custom-text-shadow-blur` | Custom text shadow blur | `1` | 0-5 |
-| `--custom-text-shadow-opacity` | Custom text shadow transparency | `0.8` | 0.1-1.0 |
-| `--custom-text-size-ratio` | Custom text font size ratio | `0.04` | 0.01-0.1 |
-
-## 🔧 **Technical Improvements**
-
-### **Enhanced Font Management**
-- Automatic Google Font download and caching
-- Temporary file management for downloaded fonts
-- Robust error handling with fallback options
-- Font size calculation based on image dimensions
-
-### **Improved Color Processing**
-- Hex color parsing and validation
-- Named color support with predefined palette
-- RGBA conversion with opacity support
-- Error handling for invalid colors
-
-### **Advanced Positioning System**
-- Dynamic position calculation based on image size
-- Margin-aware positioning
-- Support for all corner and center positions
-- Proper text dimension handling
-
-### **Enhanced Error Handling**
-- Font download timeout protection
-- Color validation and fallbacks
-- Position calculation error handling
-- Comprehensive logging for all new features
-
-### **Enhanced Shadow Control** ✨
-- **Independent Shadow Opacity**: Custom text and number watermarks now have separate shadow opacity control
-- **Professional Shadow Effects**: Enhanced blur rendering with proper color and opacity handling
-- **Visual Balance**: Perfect shadow effects for any background or lighting condition
-- **Fine-Tuning**: Separate control over shadow transparency vs. main element opacity
+### **Unified Safety System**
+- **Enhanced Safety Margins**: Dynamic safety calculations based on shadow settings
+- **Formula**: `safety_margin = max(offset + blur + 25, 40)` pixels
+- **Canvas Padding**: 80px padding to ensure complete shadow visibility
+- **Position Adjustment**: Automatic positioning that accounts for shadow extension
+- **Cross-Platform Consistency**: Identical safety standards across all platforms
 
 ## 📊 **Usage Examples**
+
+### **🆕 PNG Watermark Examples** ✨
+```bash
+# Basic PNG watermark with numbering
+--png-watermark "./logo.png" --enable-numbering
+
+# PNG watermark with bottom-left positioning
+--png-watermark "./logo.png" --png-position "bottom-left" --enable-numbering
+
+# PNG watermark with custom offset positioning
+--png-watermark "./logo.png" --png-position "bottom-left" --png-x-offset "100" --png-y-offset "0" --enable-numbering
+
+# PNG watermark with negative offset for precise positioning
+--png-watermark "./logo.png" --png-position "top-right" --png-x-offset "-30" --png-y-offset "50" --enable-numbering
+
+# PNG watermark with custom opacity
+--png-watermark "./logo.png" --png-opacity 0.8 --enable-numbering
+
+# Professional logo watermark with precise positioning
+--png-watermark "./company_logo.png" --png-position "bottom-left" --png-x-offset "100" --png-y-offset "0" --shadow-offset 0 --shadow-blur 8 --number-opacity 0.4 --enable-numbering
+```
+
+### **🆕 FINAL_V3 Configuration Usage** 🎯
+```bash
+# Use pre-configured PNG watermark setup
+py k1_multi_folder.py --base-input "k1_test_input" --base-output "k1_output" --config "final_v3"
+
+# FINAL_V3 features:
+# - PNG watermark: k1_watermark.png
+# - Position: bottom-left
+# - Left margin: 100px
+# - Bottom margin: 100px
+# - Number watermarks: Same as V2 (shadow offset: 0, shadow blur: 8, opacity: 0.4)
+```
 
 ### **Basic Customization**
 ```bash
@@ -100,86 +92,37 @@ None (all new options are optional)
 --shadow-offset 5 --shadow-blur 3
 ```
 
-### **Professional Styling**
+## 🔧 **New Command-Line Parameters (v3.0+)**
+
+### **PNG Watermark Parameters**
+| Option | Description | Default | Range |
+|--------|-------------|---------|-------|
+| `--png-position` | PNG watermark position | `center-bottom` | 6 positions |
+| `--png-x-offset` | PNG X offset for positioning | `0` | Any integer (can be negative) |
+| `--png-y-offset` | PNG Y offset for positioning | `0` | Any integer (can be negative) |
+
+### **PNG Position Options**
+- `top-left`: Top-left corner
+- `top-right`: Top-right corner  
+- `bottom-left`: Bottom-left corner
+- `bottom-right`: Bottom-right corner
+- `center`: Center of image
+- `center-bottom`: Center-bottom (traditional logo placement)
+
+### **PNG Offset Examples**
 ```bash
-# Professional look with custom colors
---number-color "#2E8B57" --shadow-color "#F5F5DC" --shadow-offset 2 --shadow-blur 1
+# Move PNG watermark 50px to the right
+--png-x-offset "50"
 
-# Top-right positioning with blue text
---number-position "top-right" --number-color "blue" --shadow-color "white"
+# Move PNG watermark 30px to the left
+--png-x-offset "-30"
 
-# Enhanced shadow control with opacity
---shadow-color "#FFFFFF" --shadow-opacity 0.6 --shadow-blur 3
+# Move PNG watermark 20px up
+--png-y-offset "-20"
+
+# Move PNG watermark 100px down
+--png-y-offset "100"
+
+# Precise positioning for professional results
+--png-x-offset "100" --png-y-offset "0"
 ```
-
-### **Google Fonts**
-```bash
-# Use popular Google Fonts
---google-font "Roboto"
---google-font "Open Sans"
---google-font "Lato"
-```
-
-### **Custom Text Watermarks**
-```bash
-# Basic custom text
---custom-text "mypage.com" --enable-numbering
-
-# Styled custom text
---custom-text "@mytaghere" --custom-text-color "#FF0000" --custom-text-position "top-right"
-
-# Professional custom text
---custom-text "mypage.com" --google-font "Roboto" --custom-text-size-ratio 0.05
-
-# Enhanced shadow control with opacity
---custom-text "hamacak1.com" --custom-text-shadow-opacity 0.4 --custom-text-shadow-blur 4
-
-# Perfect shadow balance
---custom-text "K1-PRINT" --custom-text-shadow-color "#FFFFFF" --custom-text-shadow-opacity 0.3 --custom-text-opacity 0.8
-```
-
-### **Custom Fonts**
-```bash
-# Use local font files
---custom-font "C:/Fonts/MyFont.ttf"
---custom-font "./fonts/BrandFont.otf"
-```
-
-## 🎯 **Backward Compatibility**
-
-✅ **100% Compatible** with existing scripts and workflows
-✅ **Default values** match previous behavior
-✅ **Existing arguments** work exactly as before
-✅ **No breaking changes** to current functionality
-
-## 🚀 **Performance Impact**
-
-- **Minimal overhead** for new features
-- **Efficient font caching** for Google Fonts
-- **Optimized color processing** with minimal memory usage
-- **Smart positioning** calculations with O(1) complexity
-
-## 📁 **New Files Added**
-
-- `enhanced_examples.py` - Comprehensive feature demonstrations
-- `ENHANCEMENTS_SUMMARY.md` - This summary document
-
-## 🔄 **Updated Files**
-
-- `watermark_script.py` - Core functionality enhancements
-- `requirements.txt` - Added requests library for Google Fonts
-- `README.md` - Extended documentation and examples
-- `PROJECT_OVERVIEW.md` - Updated feature descriptions
-
-## 💡 **Pro Tips**
-
-1. **Combine Options**: Mix and match features for unique effects
-2. **Google Fonts**: Use popular fonts like "Roboto", "Open Sans", "Lato"
-3. **Color Combinations**: Try complementary colors for professional looks
-4. **Shadow Effects**: Use larger offsets and blur for dramatic effects
-5. **Positioning**: Center positioning works great for logos and branding
-6. **Custom Text**: Perfect for branding, URLs, and social media tags
-
-## 🎉 **Ready to Use**
-
-All enhancements are fully tested and ready for production use. The script maintains its robust error handling and quality preservation while adding powerful new customization options.
