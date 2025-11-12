@@ -3,3 +3,4 @@ requests>=2.25.0
 pathlib2>=2.3.7; python_version < "3.4"
 Flask>=2.3.0
 flask-cors>=4.0.0
+waitress>=2.1.2
