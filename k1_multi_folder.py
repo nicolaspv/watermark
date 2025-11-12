@@ -75,7 +75,7 @@ class K1MultiFolderProcessor:
                 "png_position": "bottom-left",           # PNG watermark position
                 "png_opacity": "1.0",                    # PNG watermark transparency (0.1-1.0)
                 "margin": "100",                         # Base margin (PNG will be exactly 100px from left and bottom edges)
-                "png_x_offset": "0",                     # X offset for fine-tuning PNG position (can be negative)
+                "png_x_offset": "240",                   # X offset for fine-tuning PNG position (can be negative)
                 "png_y_offset": "250",                   # Y offset for fine-tuning PNG position (can be negative)
                 "google_font": "Rubik",                  # Number font
                 "shadow_offset": "0",                    # Number shadow offset
@@ -84,8 +84,8 @@ class K1MultiFolderProcessor:
                 "number_color": "#ffffff",               # Number color (white)
                 "shadow_color": "#000000",               # Shadow color (black)
                 "shadow_opacity": "0.9",                 # Shadow opacity
-                "number_x_offset": "76",                 # X offset for fine-tuning number position (can be negative)
-                "number_y_offset": "52"                  # Y offset for fine-tuning number position (can be negative)
+                "number_x_offset": "-200",               # X offset for fine-tuning number position (150px to the right)
+                "number_y_offset": "-50"                 # Y offset for fine-tuning number position (120px up from bottom edge)
             },
             "glow_effect": {
                 "custom_text": "K1-PRINT",

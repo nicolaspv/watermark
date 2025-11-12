@@ -27,6 +27,7 @@ py k1_multi_folder.py --base-input "k1_test_input" --base-output "k1_output" --c
 - PNG opacity: 1.0 (full opacity)
 - PNG size: 30% of image width, 25% of image height
 - Number watermarks: Same as V2 (shadow offset: 0, blur: 8, opacity: 0.4)
+- Number position: 150px to the right, 120px up from bottom edge
 
 ### **Custom PNG Watermark with Offset** 🎯
 ```bash
