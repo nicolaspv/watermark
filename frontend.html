@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>K1 Watermark Configuration Frontend</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 30px;
+        }
+
+        @media (max-width: 1024px) {
+            .content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .section h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+        }
+
+        .advanced-settings {
+            display: none;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid #ddd;
+        }
+
+        .advanced-settings.show {
+            display: block;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-right: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .btn-toggle {
+            background: #17a2b8;
+            color: white;
+            padding: 10px 20px;
+            font-size: 0.9em;
+        }
+
+        .btn-toggle:hover {
+            background: #138496;
+        }
+
+        .quick-commands {
+            background: #fff;
+            border-radius: 10px;
+            padding: 25px;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .command-card {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+        }
+
+        .command-card h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+
+        .command-card code {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 10px;
+            border-radius: 5px;
+            display: block;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        .command-card ul {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+
+        .command-card li {
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        .output {
+            margin-top: 20px;
+            padding: 20px;
+            background: #2d2d2d;
+            color: #f8f8f2;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            max-height: 400px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .output.show {
+            display: block;
+        }
+
+        .output.success {
+            border-left: 4px solid #28a745;
+        }
+
+        .output.error {
+            border-left: 4px solid #dc3545;
+        }
+
+        .status {
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .status.show {
+            display: block;
+        }
+
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .config-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.85em;
+            margin-left: 10px;
+        }
+
+        .config-badge.text {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .config-badge.png {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+
+        .config-badge.custom {
+            background: #f3e5f5;
+            color: #7b1fa2;
+        }
+
+        .folder-picker-container {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .folder-picker-container input[type="text"] {
+            flex: 1;
+        }
+
+        .folder-picker-btn {
+            padding: 12px 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .folder-picker-btn:hover {
+            background: #5568d3;
+            transform: translateY(-1px);
+        }
+
+        .folder-picker-btn:active {
+            transform: translateY(0);
+        }
+
+        .hidden-file-input {
+            display: none;
+        }
+
+        small {
+            display: block;
+            margin-top: 5px;
+            color: #666;
+            font-style: italic;
+        }
+
+        .folder-browser-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .folder-browser-modal.show {
+            display: flex;
+        }
+
+        .folder-browser-content {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .folder-browser-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .folder-browser-header h3 {
+            margin: 0;
+            color: #667eea;
+        }
+
+        .folder-browser-close {
+            background: none;
+            border: none;
+            font-size: 1.5em;
+            cursor: pointer;
+            color: #999;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .folder-browser-close:hover {
+            color: #333;
+        }
+
+        .folder-browser-path {
+            background: #f5f5f5;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            word-break: break-all;
+        }
+
+        .folder-browser-list {
+            flex: 1;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 15px;
+            min-height: 300px;
+            max-height: 400px;
+        }
+
+        .folder-item {
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: background 0.2s;
+        }
+
+        .folder-item:hover {
+            background: #f0f0f0;
+        }
+
+        .folder-item.selected {
+            background: #e3f2fd;
+            border: 2px solid #667eea;
+        }
+
+        .folder-icon {
+            font-size: 1.2em;
+        }
+
+        .folder-browser-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .loading-folder {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 K1 Watermark Configuration</h1>
+            <p>Configure and execute watermark processing with ease</p>
+        </div>
+
+        <div class="content">
+            <!-- Configuration Panel -->
+            <div class="section">
+                <h2>⚙️ Configuration</h2>
+                
+                <form id="configForm">
+                    <div class="form-group">
+                        <label for="config">Configuration Type *</label>
+                        <select id="config" name="config" required>
+                            <option value="">Select a configuration...</option>
+                            <option value="final_v2">FINAL_V2 (Text Watermark)</option>
+                            <option value="final_v3">FINAL_V3 (PNG Watermark)</option>
+                            <option value="glow_effect">Glow Effect</option>
+                            <option value="dramatic_shadow">Dramatic Shadow</option>
+                            <option value="custom">Custom Configuration</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="base_input">Base Input Folder *</label>
+                        <div class="folder-picker-container">
+                            <input type="text" id="base_input" name="base_input" 
+                                   placeholder="e.g., k1_test_input" required>
+                            <button type="button" class="folder-picker-btn" onclick="openFolderBrowser('base_input')">
+                                📁 Browse Folders
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="base_output">Base Output Folder *</label>
+                        <div class="folder-picker-container">
+                            <input type="text" id="base_output" name="base_output" 
+                                   placeholder="e.g., k1_output" required>
+                            <button type="button" class="folder-picker-btn" onclick="openFolderBrowser('base_output')">
+                                📁 Browse Folders
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="parallel">Parallel Workers</label>
+                            <input type="number" id="parallel" name="parallel" 
+                                   value="1" min="1" max="8">
+                        </div>
+                        <div class="form-group">
+                            <label for="dry_run">Dry Run</label>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="dry_run" name="dry_run">
+                                <span>Preview without processing</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="verbose">Verbose Logging</label>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="verbose" name="verbose">
+                            <span>Enable detailed logging</span>
+                        </div>
+                    </div>
+
+                    <button type="button" class="btn btn-toggle" onclick="toggleAdvanced()">
+                        🔧 Advanced Settings
+                    </button>
+
+                    <div id="advancedSettings" class="advanced-settings">
+                        <h3 style="margin-bottom: 15px; color: #667eea;">Custom Settings</h3>
+                        
+                        <div class="form-group">
+                            <label for="custom_text">Custom Text</label>
+                            <input type="text" id="custom_text" name="custom_text" 
+                                   placeholder="e.g., hamacak1.com">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="google_font">Google Font</label>
+                            <input type="text" id="google_font" name="google_font" 
+                                   placeholder="e.g., Rubik">
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="png_x_offset">PNG X Offset</label>
+                                <input type="number" id="png_x_offset" name="png_x_offset" 
+                                       placeholder="e.g., 50">
+                            </div>
+                            <div class="form-group">
+                                <label for="png_y_offset">PNG Y Offset</label>
+                                <input type="number" id="png_y_offset" name="png_y_offset" 
+                                       placeholder="e.g., -20">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="number_x_offset">Number X Offset</label>
+                                <input type="number" id="number_x_offset" name="number_x_offset" 
+                                       placeholder="e.g., -50">
+                            </div>
+                            <div class="form-group">
+                                <label for="number_y_offset">Number Y Offset</label>
+                                <input type="number" id="number_y_offset" name="number_y_offset" 
+                                       placeholder="e.g., -100">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 25px;">
+                        <button type="button" class="btn btn-primary" onclick="validatePaths()">
+                            ✅ Validate Paths
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            🚀 Execute Processing
+                        </button>
+                    </div>
+                </form>
+
+                <div id="status" class="status"></div>
+                <div id="loading" class="loading">
+                    <div class="spinner"></div>
+                    <p style="margin-top: 10px;">Processing... Please wait...</p>
+                </div>
+                <div id="output" class="output"></div>
+            </div>
+
+            <!-- Folder Browser Modal -->
+            <div id="folderBrowserModal" class="folder-browser-modal">
+                <div class="folder-browser-content">
+                    <div class="folder-browser-header">
+                        <h3>📁 Select Folder</h3>
+                        <button class="folder-browser-close" onclick="closeFolderBrowser()">&times;</button>
+                    </div>
+                    <div id="folderBrowserPath" class="folder-browser-path"></div>
+                    <div id="folderBrowserList" class="folder-browser-list">
+                        <div class="loading-folder">Loading folders...</div>
+                    </div>
+                    <div class="folder-browser-actions">
+                        <button type="button" class="btn btn-secondary" onclick="closeFolderBrowser()">Cancel</button>
+                        <button type="button" class="btn btn-primary" onclick="selectCurrentFolder()">Select This Folder</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Commands Panel -->
+            <div class="section">
+                <h2>📚 Quick Commands Reference</h2>
+                <div class="quick-commands">
+                    <!-- FINAL_V2 Configuration -->
+                    <div class="command-card">
+                        <h3>FINAL_V2 Configuration (Text Watermark)</h3>
+                        <code>py k1_multi_folder.py --base-input "k1_test_input" --base-output "k1_output" --config "final_v2"</code>
+                        <ul>
+                            <li>Custom text: "hamacak1.com"</li>
+                            <li>Google Font: Rubik</li>
+                            <li>Position: center-bottom</li>
+                            <li>Text size: 5% of image height</li>
+                            <li>Margin: 120px</li>
+                            <li>Shadow offset: 8px, blur: 4px</li>
+                            <li>Number watermarks: shadow offset: 0, blur: 8, opacity: 0.4</li>
+                        </ul>
+                    </div>
+
+                    <!-- FINAL_V3 Configuration -->
+                    <div class="command-card">
+                        <h3>🆕 FINAL_V3 Configuration (PNG Watermark) ✨</h3>
+                        <code>py k1_multi_folder.py --base-input "k1_test_input" --base-output "k1_output" --config "final_v3"</code>
+                        <ul>
+                            <li>PNG watermark: k1_watermark.png</li>
+                            <li>Position: bottom-left</li>
+                            <li>Left margin: 100px from left edge</li>
+                            <li>Bottom margin: 100px from bottom edge</li>
+                            <li>PNG opacity: 1.0 (full opacity)</li>
+                            <li>PNG size: 30% of image width, 25% of image height</li>
+                            <li>Number watermarks: Same as V2 (shadow offset: 0, blur: 8, opacity: 0.4)</li>
+                            <li>Number position: 150px to the right, 120px up from bottom edge</li>
+                        </ul>
+                    </div>
+
+                    <!-- Custom PNG Watermark with Offset -->
+                    <div class="command-card">
+                        <h3>Custom PNG Watermark with Offset 🎯</h3>
+                        <code>py k1_multi_folder.py --base-input "k1_test_input" --base-output "k1_output" --config "final_v3" --png-x-offset "50" --png-y-offset "-20"</code>
+                        <ul>
+                            <li>Uses FINAL_V3 base configuration</li>
+                            <li>X offset: 50px to the right</li>
+                            <li>Y offset: 20px up from bottom edge</li>
+                            <li>Perfect for fine-tuning PNG position</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = window.location.origin;
+
+        // Load configurations on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            loadConfigs();
+        });
+
+        async function loadConfigs() {
+            try {
+                const response = await fetch(`${API_BASE}/api/configs`);
+                const configs = await response.json();
+                console.log('Available configurations:', configs);
+            } catch (error) {
+                console.error('Error loading configurations:', error);
+            }
+        }
+
+        function toggleAdvanced() {
+            const advanced = document.getElementById('advancedSettings');
+            advanced.classList.toggle('show');
+        }
+
+        async function validatePaths() {
+            const baseInput = document.getElementById('base_input').value;
+            const baseOutput = document.getElementById('base_output').value;
+
+            if (!baseInput || !baseOutput) {
+                showStatus('Please fill in both input and output folders', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/api/validate`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        base_input: baseInput,
+                        base_output: baseOutput
+                    })
+                });
+
+                const result = await response.json();
+                
+                let message = '';
+                let statusType = 'info';
+
+                if (result.base_input.exists && result.base_input.is_dir) {
+                    const subfolderCount = result.base_input.subfolder_count || 0;
+                    message += `✅ Input folder found with ${subfolderCount} subfolder(s). `;
+                    if (subfolderCount === 0) {
+                        message += '⚠️ Warning: No subfolders found. ';
+                        statusType = 'error';
+                    }
+                } else {
+                    message += '❌ Input folder not found or is not a directory. ';
+                    statusType = 'error';
+                }
+
+                if (result.base_output.exists && result.base_output.is_dir) {
+                    message += '✅ Output folder exists. ';
+                } else {
+                    message += 'ℹ️ Output folder will be created if it doesn\'t exist. ';
+                }
+
+                showStatus(message, statusType);
+            } catch (error) {
+                showStatus('Error validating paths: ' + error.message, 'error');
+            }
+        }
+
+        document.getElementById('configForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            await executeCommand();
+        });
+
+        async function executeCommand() {
+            const form = document.getElementById('configForm');
+            const formData = new FormData(form);
+            
+            const data = {
+                base_input: formData.get('base_input'),
+                base_output: formData.get('base_output'),
+                config: formData.get('config'),
+                parallel: formData.get('parallel') || '1',
+                dry_run: formData.get('dry_run') === 'on',
+                verbose: formData.get('verbose') === 'on',
+                custom_settings: {}
+            };
+
+            // Collect custom settings
+            const customText = formData.get('custom_text');
+            const googleFont = formData.get('google_font');
+            const pngXOffset = formData.get('png_x_offset');
+            const pngYOffset = formData.get('png_y_offset');
+            const numberXOffset = formData.get('number_x_offset');
+            const numberYOffset = formData.get('number_y_offset');
+
+            if (customText) data.custom_settings.custom_text = customText;
+            if (googleFont) data.custom_settings.google_font = googleFont;
+            if (pngXOffset) data.custom_settings.png_x_offset = pngXOffset;
+            if (pngYOffset) data.custom_settings.png_y_offset = pngYOffset;
+            if (numberXOffset) data.custom_settings.number_x_offset = numberXOffset;
+            if (numberYOffset) data.custom_settings.number_y_offset = numberYOffset;
+
+            // Show loading
+            document.getElementById('loading').classList.add('show');
+            document.getElementById('output').classList.remove('show');
+            document.getElementById('status').classList.remove('show');
+
+            try {
+                const response = await fetch(`${API_BASE}/api/execute`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                // Hide loading
+                document.getElementById('loading').classList.remove('show');
+
+                // Show output
+                const outputDiv = document.getElementById('output');
+                outputDiv.classList.add('show');
+                outputDiv.classList.remove('success', 'error');
+                
+                if (result.success) {
+                    outputDiv.classList.add('success');
+                } else {
+                    outputDiv.classList.add('error');
+                }
+
+                let outputText = `Command: ${result.command}\n\n`;
+                outputText += `Return Code: ${result.return_code}\n\n`;
+                
+                if (result.output) {
+                    outputText += `Output:\n${result.output}\n\n`;
+                }
+                
+                if (result.errors) {
+                    outputText += `Errors:\n${result.errors}\n`;
+                }
+
+                outputDiv.textContent = outputText;
+
+                // Show status
+                if (result.success) {
+                    showStatus('✅ Processing completed successfully!', 'success');
+                } else {
+                    showStatus('❌ Processing failed. Check output for details.', 'error');
+                }
+
+            } catch (error) {
+                document.getElementById('loading').classList.remove('show');
+                showStatus('Error executing command: ' + error.message, 'error');
+                
+                const outputDiv = document.getElementById('output');
+                outputDiv.classList.add('show', 'error');
+                outputDiv.textContent = `Error: ${error.message}`;
+            }
+        }
+
+        function showStatus(message, type) {
+            const statusDiv = document.getElementById('status');
+            statusDiv.textContent = message;
+            statusDiv.className = `status show ${type}`;
+            
+            // Auto-hide after 10 seconds for info messages
+            if (type === 'info') {
+                setTimeout(() => {
+                    statusDiv.classList.remove('show');
+                }, 10000);
+            }
+        }
+
+        let currentInputId = null;
+        let currentFolderPath = '';
+
+        async function openFolderBrowser(inputId) {
+            currentInputId = inputId;
+            currentFolderPath = '';
+            document.getElementById('folderBrowserModal').classList.add('show');
+            await loadFolderBrowser('');
+        }
+
+        function closeFolderBrowser() {
+            document.getElementById('folderBrowserModal').classList.remove('show');
+            currentInputId = null;
+            currentFolderPath = '';
+        }
+
+        async function loadFolderBrowser(folderPath) {
+            const listDiv = document.getElementById('folderBrowserList');
+            const pathDiv = document.getElementById('folderBrowserPath');
+            
+            listDiv.innerHTML = '<div class="loading-folder">Loading folders...</div>';
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/browse`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        folder_path: folderPath || ''
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (data.error) {
+                    listDiv.innerHTML = `<div class="loading-folder" style="color: red;">Error: ${data.error}</div>`;
+                    return;
+                }
+
+                currentFolderPath = data.full_path;
+                pathDiv.textContent = data.full_path;
+
+                let html = '';
+                
+                // Add parent directory link if available
+                if (data.parent_dir) {
+                    html += `<div class="folder-item" onclick="loadFolderBrowser('${data.parent_dir.replace(/\\/g, '\\\\')}')">
+                        <span class="folder-icon">📂</span>
+                        <span><strong>.. (Parent Directory)</strong></span>
+                    </div>`;
+                }
+
+                // Add folders
+                if (data.folders && data.folders.length > 0) {
+                    data.folders.forEach(folder => {
+                        const folderFullPath = data.full_path + (data.full_path.endsWith('\\') || data.full_path.endsWith('/') ? '' : '\\') + folder;
+                        html += `<div class="folder-item" onclick="loadFolderBrowser('${folderFullPath.replace(/\\/g, '\\\\')}')">
+                            <span class="folder-icon">📁</span>
+                            <span>${folder}</span>
+                        </div>`;
+                    });
+                } else {
+                    html += '<div class="loading-folder">No subfolders found</div>';
+                }
+
+                listDiv.innerHTML = html;
+
+            } catch (error) {
+                listDiv.innerHTML = `<div class="loading-folder" style="color: red;">Error loading folders: ${error.message}</div>`;
+            }
+        }
+
+        async function selectCurrentFolder() {
+            if (!currentInputId || !currentFolderPath) {
+                showStatus('Please navigate to a folder first', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/api/get-folder-name`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        folder_path: currentFolderPath
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (data.error) {
+                    showStatus('Error: ' + data.error, 'error');
+                    return;
+                }
+
+                // Update the input field with folder name
+                const inputField = document.getElementById(currentInputId);
+                if (inputField) {
+                    inputField.value = data.folder_name;
+                    showStatus(`✅ Selected folder: ${data.folder_name}`, 'success');
+                    
+                    // Trigger validation if both paths are set
+                    setTimeout(() => {
+                        const baseInput = document.getElementById('base_input').value;
+                        const baseOutput = document.getElementById('base_output').value;
+                        if (baseInput && baseOutput) {
+                            validatePaths();
+                        }
+                    }, 500);
+                }
+
+                closeFolderBrowser();
+            } catch (error) {
+                showStatus('Error selecting folder: ' + error.message, 'error');
+            }
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('folderBrowserModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeFolderBrowser();
+            }
+        });
+    </script>
+</body>
+</html>
+

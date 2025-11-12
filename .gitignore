@@ -66,6 +66,7 @@ google_font*/
 *.cache
 temp/
 tmp/
+*.wav
 
 # Test images and watermarks (sample data)
 test_images/
