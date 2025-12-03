@@ -76,7 +76,7 @@ class K1MultiFolderProcessor:
                 "png_opacity": "1.0",                    # PNG watermark transparency (0.1-1.0)
                 "margin": "100",                         # Base margin (PNG will be exactly 100px from left and bottom edges)
                 "png_x_offset": "240",                   # X offset for fine-tuning PNG position (can be negative)
-                "png_y_offset": "250",                   # Y offset for fine-tuning PNG position (can be negative)
+                "png_y_offset": "-30",                   # Y offset for fine-tuning PNG position (can be negative)
                 "google_font": "Rubik",                  # Number font
                 "shadow_offset": "0",                    # Number shadow offset
                 "shadow_blur": "4",                      # Number shadow blur 
